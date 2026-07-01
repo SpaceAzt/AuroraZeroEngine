@@ -1,4 +1,5 @@
-#include "AuroraCore.h"
+#include "../include/AuroraCore.h"
+#include "../include/AuroraVersion.h"
 
 #include <iostream>
 
@@ -17,6 +18,9 @@ bool AuroraCore::Initialize() {
 	if (m_initialized) {
 		return true;
 	}
+
+	 AuroraVersion::Print();
+
 
 	std::cout << "[Aurora] Core Initialize\n";
 
