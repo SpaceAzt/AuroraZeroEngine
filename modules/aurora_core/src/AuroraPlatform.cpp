@@ -1,14 +1,17 @@
 #include "../include/AuroraPlatform.h"
-
 #include "../include/ITimeProvider.h"
+#include "../include/IFileProvider.h"
 
 ITimeProvider *AuroraPlatform::s_timeProvider = nullptr;
+IFileProvider *AuroraPlatform::s_fileProvider = nullptr;
+
 
 void AuroraPlatform::Initialize() {
 }
 
 void AuroraPlatform::Shutdown() {
 	s_timeProvider = nullptr;
+	s_fileProvider = nullptr;
 }
 
 void AuroraPlatform::SetTimeProvider(ITimeProvider *provider) {
@@ -17,4 +20,12 @@ void AuroraPlatform::SetTimeProvider(ITimeProvider *provider) {
 
 ITimeProvider *AuroraPlatform::GetTimeProvider() {
 	return s_timeProvider;
+}
+
+void AuroraPlatform::SetFileProvider(IFileProvider *provider) {
+	s_fileProvider = provider;
+}
+
+IFileProvider *AuroraPlatform::GetFileProvider() {
+	return s_fileProvider;
 }
