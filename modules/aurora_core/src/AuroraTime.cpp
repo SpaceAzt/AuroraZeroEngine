@@ -1,21 +1,16 @@
 #include "../include/AuroraTime.h"
 
-#include <GLFW/glfw3.h>
-
 float AuroraTime::m_deltaTime = 0.0f;
-
 double AuroraTime::m_totalTime = 0.0;
 
 void AuroraTime::Initialize() {
-	m_totalTime = glfwGetTime();
+	m_deltaTime = 0.0f;
+	m_totalTime = 0.0;
 }
 
 void AuroraTime::Update() {
-	double currentTime = glfwGetTime();
-
-	m_deltaTime = static_cast<float>(currentTime - m_totalTime);
-
-	m_totalTime = currentTime;
+	// Şimdilik boş.
+	// Gerçek zaman bilgisi GodotTimeProvider üzerinden gelecek.
 }
 
 float AuroraTime::GetDeltaTime() {
