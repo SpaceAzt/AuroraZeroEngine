@@ -1,5 +1,6 @@
 #include "../include/AuroraCore.h"
 #include "../include/AuroraVersion.h"
+#include "../include/AuroraLogger.h"
 
 #include <iostream>
 
@@ -22,7 +23,7 @@ bool AuroraCore::Initialize() {
 	 AuroraVersion::Print();
 
 
-	std::cout << "[Aurora] Core Initialize\n";
+	AuroraLogger::Success("Aurora Core Initialized");
 
 	m_initialized = true;
 
@@ -37,7 +38,7 @@ void AuroraCore::Shutdown() {
 		return;
 	}
 
-	std::cout << "[Aurora] Core Shutdown\n";
+	AuroraLogger::Info("Aurora Core Shutdown");
 
 	m_initialized = false;
 }
