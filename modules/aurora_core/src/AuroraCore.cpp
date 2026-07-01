@@ -1,7 +1,7 @@
 #include "../include/AuroraCore.h"
-#include "../include/AuroraVersion.h"
 #include "../include/AuroraLogger.h"
 #include "../include/AuroraFileSystem.h"
+#include "../include/AuroraModuleManager.h"
 
 #include <iostream>
 
@@ -21,10 +21,11 @@ bool AuroraCore::Initialize() {
 		return true;
 	}
 
-	 AuroraVersion::Print();
-
+	AuroraModuleManager::Initialize();
 
 	AuroraLogger::Success("Aurora Core Initialized");
+
+	
 
 	 if (AuroraFileSystem::Exists("README.md")) {
 		 AuroraLogger::Info("README.md bulundu.");
@@ -44,7 +45,7 @@ void AuroraCore::Shutdown() {
 	if (!m_initialized) {
 		return;
 	}
-
+	AuroraModuleManager::Shutdown();
 	AuroraLogger::Info("Aurora Core Shutdown");
 
 	m_initialized = false;
