@@ -1,6 +1,5 @@
 #pragma once
 
-
 class AuroraCore {
 public:
 	static AuroraCore &Get();
@@ -10,6 +9,10 @@ public:
 	void Update();
 
 	void Shutdown();
+
+	bool IsRunning() const;
+
+	void Stop();
 
 private:
 	AuroraCore();
@@ -21,4 +24,5 @@ private:
 
 private:
 	bool m_initialized = false;
+	bool m_running = false;
 };

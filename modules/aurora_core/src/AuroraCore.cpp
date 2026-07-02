@@ -53,7 +53,7 @@ bool AuroraCore::Initialize() {
 	 }
 
 	m_initialized = true;
-
+	 m_running = true;
 	return true;
 }
 
@@ -74,6 +74,14 @@ void AuroraCore::Shutdown() {
 	
 	AuroraLogger::Info("Aurora Core Shutdown");
 
+	m_running = false;
 	m_initialized = false;
 }
 
+bool AuroraCore::IsRunning() const {
+	return m_running;
+}
+
+void AuroraCore::Stop() {
+	m_running = false;
+}

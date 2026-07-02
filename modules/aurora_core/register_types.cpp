@@ -1,13 +1,16 @@
 #include "register_types.h"
+#include "include/AuroraApplication.h"
 
 #include <iostream>
+
+static AuroraApplication g_application;
 
 void initialize_aurora_core_module(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
 		return;
 	}
 
-	std::cout << "[Aurora] Core Initialized" << std::endl;
+	g_application.Initialize();
 }
 
 void uninitialize_aurora_core_module(ModuleInitializationLevel p_level) {
@@ -15,5 +18,5 @@ void uninitialize_aurora_core_module(ModuleInitializationLevel p_level) {
 		return;
 	}
 
-	std::cout << "[Aurora] Core Shutdown" << std::endl;
+	g_application.Shutdown();
 }
