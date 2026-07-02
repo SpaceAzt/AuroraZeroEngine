@@ -1,3 +1,4 @@
+#include "../include/AuroraLogger.h"
 #include "../include/AuroraPlatform.h"
 #include "../include/ITimeProvider.h"
 #include "../include/IFileProvider.h"
@@ -7,9 +8,12 @@ IFileProvider *AuroraPlatform::s_fileProvider = nullptr;
 
 
 void AuroraPlatform::Initialize() {
+
+	AuroraLogger::Success("Aurora Platform Initialized");
 }
 
 void AuroraPlatform::Shutdown() {
+	AuroraLogger::Info("Aurora Platform Shutdown");
 	s_timeProvider = nullptr;
 	s_fileProvider = nullptr;
 }

@@ -1,4 +1,5 @@
 #include "../include/AuroraCore.h"
+#include "../include/AuroraPlatform.h"
 #include "../include/AuroraLogger.h"
 #include "../include/AuroraFileSystem.h"
 #include "../include/AuroraModuleManager.h"
@@ -20,6 +21,8 @@ bool AuroraCore::Initialize() {
 	if (m_initialized) {
 		return true;
 	}
+
+	AuroraPlatform::Initialize();
 
 	AuroraModuleManager::Initialize();
 
@@ -45,6 +48,7 @@ void AuroraCore::Shutdown() {
 	if (!m_initialized) {
 		return;
 	}
+	AuroraPlatform::Shutdown();
 	AuroraModuleManager::Shutdown();
 	AuroraLogger::Info("Aurora Core Shutdown");
 
