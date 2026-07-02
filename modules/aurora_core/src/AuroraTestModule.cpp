@@ -1,9 +1,21 @@
 #include "../include/AuroraTestModule.h"
-
+#include "../include/events/EventBus.h"
+#include "../include/events/engine/EngineStartedEvent.h"
 #include "../include/AuroraLogger.h"
 
 bool AuroraTestModule::Initialize() {
 	AuroraLogger::Success("AuroraTestModule Initialized");
+
+	EventBus::Get().Subscribe(
+			EventType::EngineStarted,
+			[](IEvent &event) {
+				AuroraLogger::Success(
+						std::string("Received Event: ") + event.GetName());
+			});
+
+	EngineStartedEvent event;
+
+	EventBus::Get().Publish(event);
 
 	return true;
 }
