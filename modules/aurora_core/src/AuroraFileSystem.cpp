@@ -1,15 +1,35 @@
 #include "../include/AuroraFileSystem.h"
+#include "../include/AuroraPlatform.h"
+#include "../include/IFileProvider.h"
 
 #include <filesystem>
 
 bool AuroraFileSystem::Exists(const std::string &path) {
-	return std::filesystem::exists(path);
+	auto *provider = AuroraPlatform::GetFileProvider();
+
+	if (!provider) {
+		return false;
+	}
+
+	return provider->Exists(path);
 }
 
 bool AuroraFileSystem::CreateDirectory(const std::string &path) {
-	return std::filesystem::create_directories(path);
+	auto *provider = AuroraPlatform::GetFileProvider();
+
+	if (!provider) {
+		return false;
+	}
+
+	return provider->CreateDirectory(path);
 }
 
 bool AuroraFileSystem::Remove(const std::string &path) {
-	return std::filesystem::remove(path);
+	auto *provider = AuroraPlatform::GetFileProvider();
+
+	if (!provider) {
+		return false;
+	}
+
+	return provider->Remove(path);
 }

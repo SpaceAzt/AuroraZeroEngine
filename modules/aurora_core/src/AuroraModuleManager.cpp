@@ -41,5 +41,13 @@ void AuroraModuleManager::RegisterModule(
 		return;
 	}
 
+	// Aynı modül daha önce eklenmiş mi?
+	for (const auto &existing : m_modules) {
+		if (existing == module) {
+			AuroraLogger::Warning("Module already registered.");
+			return;
+		}
+	}
+
 	m_modules.push_back(module);
 }

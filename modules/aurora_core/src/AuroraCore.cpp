@@ -6,12 +6,14 @@
 #include "../include/GodotTimeProvider.h"
 #include "../include/AuroraTime.h"
 #include "../include/AuroraTestModule.h"
+#include "../include/GodotFileProvider.h"
 
 #include <memory>
 
 #include <iostream>
 
 static GodotTimeProvider g_timeProvider;
+static GodotFileProvider g_fileProvider;
 static AuroraTestModule g_testModule;
 
 AuroraCore::AuroraCore() {
@@ -33,6 +35,7 @@ bool AuroraCore::Initialize() {
 	AuroraPlatform::Initialize();
 
 	AuroraPlatform::SetTimeProvider(&g_timeProvider);
+	AuroraPlatform::SetFileProvider(&g_fileProvider);
 
 	AuroraTime::Initialize();
 
