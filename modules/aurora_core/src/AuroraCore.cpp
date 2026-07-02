@@ -3,8 +3,16 @@
 #include "../include/AuroraLogger.h"
 #include "../include/AuroraFileSystem.h"
 #include "../include/AuroraModuleManager.h"
+#include "../include/GodotTimeProvider.h"
+#include "../include/AuroraTime.h"
+#include "../include/AuroraTestModule.h"
+
+#include <memory>
 
 #include <iostream>
+
+static GodotTimeProvider g_timeProvider;
+static AuroraTestModule g_testModule;
 
 AuroraCore::AuroraCore() {
 }
@@ -24,11 +32,16 @@ bool AuroraCore::Initialize() {
 
 	AuroraPlatform::Initialize();
 
+	AuroraPlatform::SetTimeProvider(&g_timeProvider);
+
+	AuroraTime::Initialize();
+
+	AuroraModuleManager::RegisterModule(
+			std::make_shared<AuroraTestModule>());
+
 	AuroraModuleManager::Initialize();
 
 	AuroraLogger::Success("Aurora Core Initialized");
-
-	
 
 	 if (AuroraFileSystem::Exists("README.md")) {
 		 AuroraLogger::Info("README.md bulundu.");
@@ -42,14 +55,20 @@ bool AuroraCore::Initialize() {
 }
 
 void AuroraCore::Update() {
+	AuroraTime::Update();
+
+	AuroraModuleManager::Update();
 }
 
 void AuroraCore::Shutdown() {
 	if (!m_initialized) {
 		return;
 	}
-	AuroraPlatform::Shutdown();
+
 	AuroraModuleManager::Shutdown();
+
+	AuroraPlatform::Shutdown();
+	
 	AuroraLogger::Info("Aurora Core Shutdown");
 
 	m_initialized = false;

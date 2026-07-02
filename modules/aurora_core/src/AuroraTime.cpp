@@ -1,22 +1,42 @@
 #include "../include/AuroraTime.h"
+#include "../include/AuroraPlatform.h"
+#include "../include/ITimeProvider.h"
 
 float AuroraTime::m_deltaTime = 0.0f;
 double AuroraTime::m_totalTime = 0.0;
 
 void AuroraTime::Initialize() {
-	m_deltaTime = 0.0f;
-	m_totalTime = 0.0;
+	auto *provider = AuroraPlatform::GetTimeProvider();
+
+	if (provider) {
+		provider->Initialize();
+	}
 }
 
 void AuroraTime::Update() {
-	// Şimdilik boş.
-	// Gerçek zaman bilgisi GodotTimeProvider üzerinden gelecek.
+	auto *provider = AuroraPlatform::GetTimeProvider();
+
+	if (provider) {
+		provider->Update();
+	}
 }
 
 float AuroraTime::GetDeltaTime() {
-	return m_deltaTime;
+	auto *provider = AuroraPlatform::GetTimeProvider();
+
+	if (provider) {
+		return provider->GetDeltaTime();
+	}
+
+	return 0.0f;
 }
 
 double AuroraTime::GetTotalTime() {
-	return m_totalTime;
+	auto *provider = AuroraPlatform::GetTimeProvider();
+
+	if (provider) {
+		return provider->GetTotalTime();
+	}
+
+	return 0.0;
 }
