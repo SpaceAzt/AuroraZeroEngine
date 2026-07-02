@@ -17,3 +17,16 @@ void AuroraLogger::Error(const std::string &message) {
 void AuroraLogger::Success(const std::string &message) {
 	std::cout << "[SUCCESS] " << message << std::endl;
 }
+
+void AuroraLogger::Section(const std::string &title) {
+	std::cout << std::endl;
+
+	std::cout << "========================================"
+			  << std::endl;
+
+	std::cout << "  " << title
+			  << std::endl;
+
+	std::cout << "========================================"
+			  << std::endl;
+}

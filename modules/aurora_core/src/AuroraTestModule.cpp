@@ -3,9 +3,41 @@
 #include "../include/events/engine/EngineStartedEvent.h"
 #include "../include/AuroraLogger.h"
 #include "../include/events/engine/EngineStoppedEvent.h"
+#include "../include/ecs/Registry.h"
+#include "../include/ecs/EntityManager.h"
 
 bool AuroraTestModule::Initialize() {
 	AuroraLogger::Success("AuroraTestModule Initialized");
+
+	// -----------------------------------------------------------------------------
+	// ECS Foundation Test
+	// -----------------------------------------------------------------------------
+
+	Registry registry;
+
+	EntityManager entityManager(registry);
+
+	Entity player = entityManager.Create();
+	Entity enemy = entityManager.Create();
+
+	AuroraLogger::Success(
+			"Player Entity ID: " +
+			std::to_string(player.GetId()));
+
+	AuroraLogger::Success(
+			"Enemy Entity ID: " +
+			std::to_string(enemy.GetId()));
+
+	entityManager.Destroy(enemy);
+
+	AuroraLogger::Info(
+			registry.IsAlive(enemy)
+					? "Enemy Alive"
+					: "Enemy Destroyed");
+
+	AuroraLogger::Section("ECS Foundation Test");
+
+
 
 	EventBus::Get().Subscribe(
 			EventType::EngineStarted,
@@ -20,6 +52,8 @@ bool AuroraTestModule::Initialize() {
 				AuroraLogger::Info(
 						std::string("Received: ") + event.ToString());
 			});
+
+	AuroraLogger::Section("Event System Test");
 
 	return true;
 }
