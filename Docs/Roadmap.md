@@ -65,3 +65,10 @@ Planned
 - Dedicated editor
 - Stable API
 - Documentation
+
+## Logger Improvements (v0.3)
+
+- [ ] Add Trace log level
+- [ ] Add Debug log level
+- [ ] Move EventBus diagnostic logs to Debug
+- [ ] Allow disabling debug logs in Release builds

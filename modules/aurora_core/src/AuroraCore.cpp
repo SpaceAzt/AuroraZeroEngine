@@ -7,6 +7,9 @@
 #include "../include/AuroraTime.h"
 #include "../include/AuroraTestModule.h"
 #include "../include/GodotFileProvider.h"
+#include "../include/events/EventBus.h"
+#include "../include/events/engine/EngineStartedEvent.h"
+#include "../include/events/engine/EngineStoppedEvent.h"
 
 #include <memory>
 
@@ -14,7 +17,7 @@
 
 static GodotTimeProvider g_timeProvider;
 static GodotFileProvider g_fileProvider;
-static AuroraTestModule g_testModule;
+
 
 AuroraCore::AuroraCore() {
 }
@@ -44,6 +47,9 @@ bool AuroraCore::Initialize() {
 
 	AuroraModuleManager::Initialize();
 
+	EngineStartedEvent started;
+	EventBus::Get().Publish(started);
+
 	AuroraLogger::Success("Aurora Core Initialized");
 
 	 if (AuroraFileSystem::Exists("README.md")) {
@@ -67,6 +73,10 @@ void AuroraCore::Shutdown() {
 	if (!m_initialized) {
 		return;
 	}
+
+	EngineStoppedEvent stopped;
+
+	EventBus::Get().Publish(stopped);
 
 	AuroraModuleManager::Shutdown();
 

@@ -2,6 +2,7 @@
 #include "../include/events/EventBus.h"
 #include "../include/events/engine/EngineStartedEvent.h"
 #include "../include/AuroraLogger.h"
+#include "../include/events/engine/EngineStoppedEvent.h"
 
 bool AuroraTestModule::Initialize() {
 	AuroraLogger::Success("AuroraTestModule Initialized");
@@ -10,12 +11,15 @@ bool AuroraTestModule::Initialize() {
 			EventType::EngineStarted,
 			[](IEvent &event) {
 				AuroraLogger::Success(
-						std::string("Received Event: ") + event.GetName());
+						std::string("Received: ") + event.ToString());
 			});
 
-	EngineStartedEvent event;
-
-	EventBus::Get().Publish(event);
+	EventBus::Get().Subscribe(
+			EventType::EngineStopped,
+			[](IEvent &event) {
+				AuroraLogger::Info(
+						std::string("Received: ") + event.ToString());
+			});
 
 	return true;
 }
@@ -31,5 +35,10 @@ void AuroraTestModule::Update() {
 }
 
 void AuroraTestModule::Shutdown() {
+	AuroraLogger::Warning(">>> AuroraTestModule::Shutdown entered");
+
 	AuroraLogger::Info("AuroraTestModule Shutdown");
+
+	AuroraLogger::Warning("<<< AuroraTestModule::Shutdown finished");
 }
+

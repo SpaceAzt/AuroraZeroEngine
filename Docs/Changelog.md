@@ -33,3 +33,15 @@ All notable changes to AuroraZeroEngine are documented here.
 
 - Module initialization validation.
 - Duplicate module registration protection.
+
+## v0.2.0
+
+### Added
+- Core Event System
+- EventBus
+- EventDispatcher
+- EngineStartedEvent
+- EngineStoppedEvent
+- Module event infrastructure
+- AuroraTestModule event validation
+

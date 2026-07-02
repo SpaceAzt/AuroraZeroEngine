@@ -5,6 +5,9 @@ enum class EventType {
 	EngineStarted,
 	EngineStopped,
 
+	ModuleLoaded,
+	ModuleUnloaded,
+
 	WindowResize,
 	WindowClose,
 
