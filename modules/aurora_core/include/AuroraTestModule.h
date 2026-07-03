@@ -14,4 +14,7 @@ private:
 	void RunEventSystemTests();
 
 	void RunECSTests();
+
+	 void RunSparseSetTests();
+
 };

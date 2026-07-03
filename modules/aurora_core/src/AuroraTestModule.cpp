@@ -5,6 +5,7 @@
 #include "../include/events/engine/EngineStoppedEvent.h"
 #include "../include/ecs/Registry.h"
 #include "../include/ecs/EntityManager.h"
+#include "../include/ecs/storage/SparseSet.h"
 
 
 // -----------------------------------------------------------------------------
@@ -14,6 +15,7 @@
 bool AuroraTestModule::Initialize() {
 	AuroraLogger::Success("AuroraTestModule Initialized");
 
+	RunSparseSetTests();
     RunECSTests();
 	RunEventSystemTests();
 
@@ -71,6 +73,48 @@ void AuroraTestModule::RunEventSystemTests() {
 				AuroraLogger::Info(
 						std::string("Received: ") + event.ToString());
 			});
+}
+
+// -----------------------------------------------------------------------------
+// SparseSet Tests
+// -----------------------------------------------------------------------------
+
+void AuroraTestModule::RunSparseSetTests() {
+	AuroraLogger::Section("Sparse Set Test");
+
+	SparseSet set;
+
+	set.Insert(1);
+	set.Insert(5);
+	set.Insert(10);
+
+	AuroraLogger::Info(
+			"Size: " + std::to_string(set.Size()));
+
+	AuroraLogger::Info(
+			set.Contains(5)
+					? "Entity 5 Found"
+					: "Entity 5 Missing");
+
+	set.Remove(5);
+
+	AuroraLogger::Info(
+			set.Contains(5)
+					? "Entity 5 Found"
+					: "Entity 5 Removed");
+
+	AuroraLogger::Info(
+			"Size: " + std::to_string(set.Size()));
+
+	set.Insert(5);
+
+	AuroraLogger::Info(
+			set.Contains(5)
+					? "Entity 5 Reinserted"
+					: "Insert Failed");
+
+	AuroraLogger::Info(
+			"Size: " + std::to_string(set.Size()));
 }
 
 void AuroraTestModule::Update() {
