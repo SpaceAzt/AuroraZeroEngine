@@ -264,3 +264,14 @@ Every major feature must include:
 ---
 
 Aurora Engine Coding Style v1.0
+
+## Include Style
+
+Always include headers using the project include path.
+
+✔ Good
+
+```cpp
+#include "AuroraLogger.h"
+#include "ecs/Registry.h"
+#include "events/EventBus.h"

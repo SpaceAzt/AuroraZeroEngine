@@ -13,6 +13,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <vector>
+#include <limits>
 
 using EntityID = uint32_t;
 
@@ -31,6 +32,10 @@ public:
 
 	size_t Size() const;
 
+	size_t GetDenseIndex(EntityID entity) const;
+
+	EntityID GetEntity(size_t index) const;
+
 	const std::vector<EntityID> &GetDense() const;
 
 private:
@@ -38,6 +43,8 @@ private:
 	// TODO(v0.4):
 	// Support iteration, views and component storage.
 	// -------------------------------------------------------------------------
+	static constexpr size_t INVALID_INDEX =
+			std::numeric_limits<size_t>::max();
 
 	std::vector<EntityID> m_dense;
 	std::vector<size_t> m_sparse;

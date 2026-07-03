@@ -11,7 +11,13 @@ public:
 	void Shutdown() override;
 
 private:
+	// -------------------------------------------------------------------------
+	// Test Suites
+	// -------------------------------------------------------------------------
+
 	void RunEventSystemTests();
+
+	void RunComponentStorageTests();
 
 	void RunECSTests();
 

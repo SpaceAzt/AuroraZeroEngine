@@ -1,12 +1,23 @@
-#include "../include/AuroraTestModule.h"
-#include "../include/events/EventBus.h"
-#include "../include/events/engine/EngineStartedEvent.h"
-#include "../include/AuroraLogger.h"
-#include "../include/events/engine/EngineStoppedEvent.h"
-#include "../include/ecs/Registry.h"
-#include "../include/ecs/EntityManager.h"
-#include "../include/ecs/storage/SparseSet.h"
+// Aurora
+#include "AuroraCore.h"
+#include "AuroraLogger.h"
+#include "AuroraTestModule.h"
 
+// ECS
+#include "ecs/EntityManager.h"
+#include "ecs/Registry.h"
+
+// ECS Storage
+#include "ecs/storage/ComponentStorage.h"
+#include "ecs/storage/SparseSet.h"
+
+// ECS Components
+#include "ecs/components/TransformComponent.h"
+
+// Events
+#include "events/EventBus.h"
+#include "events/engine/EngineStartedEvent.h"
+#include "events/engine/EngineStoppedEvent.h"
 
 // -----------------------------------------------------------------------------
 // Initialize
@@ -16,6 +27,7 @@ bool AuroraTestModule::Initialize() {
 	AuroraLogger::Success("AuroraTestModule Initialized");
 
 	RunSparseSetTests();
+	RunComponentStorageTests();
     RunECSTests();
 	RunEventSystemTests();
 
@@ -115,6 +127,39 @@ void AuroraTestModule::RunSparseSetTests() {
 
 	AuroraLogger::Info(
 			"Size: " + std::to_string(set.Size()));
+}
+
+// -----------------------------------------------------------------------------
+// Component Storage Tests
+// -----------------------------------------------------------------------------
+
+void AuroraTestModule::RunComponentStorageTests() {
+	AuroraLogger::Section("Component Storage Test");
+
+	ComponentStorage<TransformComponent> storage;
+
+	storage.Add(
+			1,
+			{ 10.0f, 20.0f, 30.0f });
+
+	if (storage.Has(1)) {
+		AuroraLogger::Success("Transform added.");
+	}
+
+	auto &transform = storage.Get(1);
+
+	AuroraLogger::Info(
+			"Position: (" +
+			std::to_string(transform.x) + ", " +
+			std::to_string(transform.y) + ", " +
+			std::to_string(transform.z) + ")");
+
+	storage.Remove(1);
+
+	AuroraLogger::Info(
+			storage.Has(1)
+					? "Component still exists"
+					: "Component removed");
 }
 
 void AuroraTestModule::Update() {

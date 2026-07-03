@@ -12,7 +12,7 @@ void SparseSet::Insert(EntityID entity) {
 	}
 
 	if (entity >= m_sparse.size()) {
-		m_sparse.resize(entity + 1, static_cast<size_t>(-1));
+		m_sparse.resize(entity + 1, INVALID_INDEX);
 	}
 
 	m_sparse[entity] = m_dense.size();
@@ -35,7 +35,7 @@ void SparseSet::Remove(EntityID entity) {
 	m_sparse[lastEntity] = index;
 
 	m_dense.pop_back();
-	m_sparse[entity] = static_cast<size_t>(-1);
+	m_sparse[entity] = INVALID_INDEX;
 }
 
 // -----------------------------------------------------------------------------
@@ -47,7 +47,7 @@ bool SparseSet::Contains(EntityID entity) const {
 		return false;
 	}
 
-	return m_sparse[entity] != static_cast<size_t>(-1);
+	return m_sparse[entity] != INVALID_INDEX;
 }
 
 // -----------------------------------------------------------------------------
@@ -74,3 +74,24 @@ size_t SparseSet::Size() const {
 const std::vector<EntityID> &SparseSet::GetDense() const {
 	return m_dense;
 }
+
+// -----------------------------------------------------------------------------
+// Get Dense Index
+// -----------------------------------------------------------------------------
+
+size_t SparseSet::GetDenseIndex(EntityID entity) const {
+	if (!Contains(entity)) {
+		return INVALID_INDEX;
+	}
+
+	return m_sparse[entity];
+}
+
+// -----------------------------------------------------------------------------
+// Get Entity
+// -----------------------------------------------------------------------------
+
+EntityID SparseSet::GetEntity(size_t index) const {
+	return m_dense[index];
+}
+
