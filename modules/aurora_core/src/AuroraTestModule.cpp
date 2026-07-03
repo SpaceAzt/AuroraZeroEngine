@@ -6,12 +6,26 @@
 #include "../include/ecs/Registry.h"
 #include "../include/ecs/EntityManager.h"
 
+
+// -----------------------------------------------------------------------------
+// Initialize
+// -----------------------------------------------------------------------------
+
 bool AuroraTestModule::Initialize() {
 	AuroraLogger::Success("AuroraTestModule Initialized");
 
-	// -----------------------------------------------------------------------------
-	// ECS Foundation Test
-	// -----------------------------------------------------------------------------
+    RunECSTests();
+	RunEventSystemTests();
+
+	return true;
+}
+
+// -----------------------------------------------------------------------------
+// ECS Tests
+// -----------------------------------------------------------------------------
+
+void AuroraTestModule::RunECSTests() {
+	AuroraLogger::Section("ECS Foundation Test");
 
 	Registry registry;
 
@@ -21,23 +35,28 @@ bool AuroraTestModule::Initialize() {
 	Entity enemy = entityManager.Create();
 
 	AuroraLogger::Success(
-			"Player Entity ID: " +
-			std::to_string(player.GetId()));
+			"Created Player Entity (ID: " +
+			std::to_string(player.GetId()) + ")");
 
 	AuroraLogger::Success(
-			"Enemy Entity ID: " +
-			std::to_string(enemy.GetId()));
+			"Created Enemy Entity (ID: " +
+			std::to_string(enemy.GetId()) + ")");
 
 	entityManager.Destroy(enemy);
 
-	AuroraLogger::Info(
-			registry.IsAlive(enemy)
-					? "Enemy Alive"
-					: "Enemy Destroyed");
+	if (!registry.IsAlive(enemy)) {
+		AuroraLogger::Success("Enemy Entity successfully destroyed");
+	} else {
+		AuroraLogger::Error("Failed to destroy Enemy Entity");
+	}
+}
 
-	AuroraLogger::Section("ECS Foundation Test");
+// -----------------------------------------------------------------------------
+// Event Tests
+// -----------------------------------------------------------------------------
 
-
+void AuroraTestModule::RunEventSystemTests() {
+	AuroraLogger::Section("Event System Test");
 
 	EventBus::Get().Subscribe(
 			EventType::EngineStarted,
@@ -52,10 +71,6 @@ bool AuroraTestModule::Initialize() {
 				AuroraLogger::Info(
 						std::string("Received: ") + event.ToString());
 			});
-
-	AuroraLogger::Section("Event System Test");
-
-	return true;
 }
 
 void AuroraTestModule::Update() {
@@ -69,10 +84,9 @@ void AuroraTestModule::Update() {
 }
 
 void AuroraTestModule::Shutdown() {
-	AuroraLogger::Warning(">>> AuroraTestModule::Shutdown entered");
-
+	
 	AuroraLogger::Info("AuroraTestModule Shutdown");
 
-	AuroraLogger::Warning("<<< AuroraTestModule::Shutdown finished");
 }
+
 

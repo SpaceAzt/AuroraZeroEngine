@@ -9,4 +9,9 @@ public:
 	void Update() override;
 
 	void Shutdown() override;
+
+private:
+	void RunEventSystemTests();
+
+	void RunECSTests();
 };
