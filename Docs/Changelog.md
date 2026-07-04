@@ -19,6 +19,21 @@ This project follows Semantic Versioning.
 
 ---
 
+## v0.3.7
+
+### Added
+
+- ECS MultiView
+- Multi-component filtering
+- MultiView iterator
+- Registry::CreateMultiView()
+- MultiView tests
+
+### Improved
+
+- ECS iteration architecture
+- Multi-component queries
+
 ---
 
 ## v0.3.6

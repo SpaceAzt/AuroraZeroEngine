@@ -11,14 +11,15 @@
 void MovementSystem::Update(
 		Registry &registry,
 		float deltaTime) {
-	auto view = registry.CreateView<TransformComponent>();
+	auto view =
+			registry.CreateMultiView<
+					TransformComponent,
+					VelocityComponent>();
 
 	for (EntityID entityId : view) {
 		Entity entity(entityId);
 
-		if (!registry.HasComponent<VelocityComponent>(entity)) {
-			continue;
-		}
+
 
 		auto &transform =
 				registry.GetComponent<TransformComponent>(entity);
