@@ -396,3 +396,23 @@ $RECYCLE.BIN/
 *.msp
 *.lnk
 *.generated.props
+
+
+#########################
+### Aurora Engine ###
+#########################
+
+# Documentation exports
+docs/build/
+
+# Experimental files
+sandbox/
+experiments/
+
+# Personal notes
+*.bak
+*.old
+*.tmp
+
+# Generated profiling
+profiling/

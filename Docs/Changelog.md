@@ -17,6 +17,19 @@ This project follows Semantic Versioning.
 
 ---
 
+## v0.3.8
+
+### Changed
+
+- MovementSystem now uses MultiView.
+- Removed redundant HasComponent checks.
+- Improved ECS iteration performance.
+
+### Improved
+
+- ECS architecture
+- System iteration
+
 ---
 
 ## v0.3.7

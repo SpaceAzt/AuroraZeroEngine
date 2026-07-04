@@ -1,15 +1,17 @@
-#!/usr/bin/env python
-
 Import("env")
 
 env.Append(CPPPATH=["#modules/aurora_core/include"])
 
+# Core
 env.add_source_files(env.modules_sources, "*.cpp")
 env.add_source_files(env.modules_sources, "src/*.cpp")
 
+# Events
 env.add_source_files(env.modules_sources, "src/events/*.cpp")
 
+# ECS
 env.add_source_files(env.modules_sources, "src/ecs/*.cpp")
 env.add_source_files(env.modules_sources, "src/ecs/storage/*.cpp")
 env.add_source_files(env.modules_sources, "src/ecs/view/*.cpp")
 env.add_source_files(env.modules_sources, "src/ecs/systems/*.cpp")
+env.add_source_files(env.modules_sources, "src/ecs/commands/*.cpp")

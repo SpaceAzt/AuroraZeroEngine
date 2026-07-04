@@ -1,28 +1,64 @@
+// -----------------------------------------------------------------------------
 // Aurora
+// -----------------------------------------------------------------------------
+
 #include "AuroraCore.h"
 #include "AuroraLogger.h"
 #include "AuroraTestModule.h"
 
+// -----------------------------------------------------------------------------
 // ECS
+// -----------------------------------------------------------------------------
+
 #include "ecs/EntityManager.h"
 #include "ecs/Registry.h"
 
-// ECS Systems
-#include "ecs/systems/SystemManager.h"
-#include "ecs/systems/MovementSystem.h"
-
-// ECS Storage
-#include "ecs/storage/ComponentStorage.h"
-#include "ecs/storage/SparseSet.h"
-
+// -----------------------------------------------------------------------------
 // ECS Components
+// -----------------------------------------------------------------------------
+
 #include "ecs/components/TransformComponent.h"
 #include "ecs/components/VelocityComponent.h"
 
+// -----------------------------------------------------------------------------
+// ECS Storage
+// -----------------------------------------------------------------------------
+
+#include "ecs/storage/ComponentStorage.h"
+#include "ecs/storage/SparseSet.h"
+
+// -----------------------------------------------------------------------------
+// ECS View
+// -----------------------------------------------------------------------------
+
+// (Şimdilik View veya MultiView header'larını doğrudan kullanmıyoruz.)
+
+// -----------------------------------------------------------------------------
+// ECS Systems
+// -----------------------------------------------------------------------------
+
+#include "ecs/systems/MovementSystem.h"
+#include "ecs/systems/SystemManager.h"
+
+// -----------------------------------------------------------------------------
+// ECS Commands
+// -----------------------------------------------------------------------------
+
+#include "ecs/commands/EntityCommandBuffer.h"
+#include "ecs/commands/CreateEntityCommand.h"
+#include "ecs/commands/DestroyEntityCommand.h"
+
+// -----------------------------------------------------------------------------
 // Events
+// -----------------------------------------------------------------------------
+
 #include "events/EventBus.h"
 #include "events/engine/EngineStartedEvent.h"
 #include "events/engine/EngineStoppedEvent.h"
+
+// -----------------------------------------------------------------------------
+// STL
+// -----------------------------------------------------------------------------
 
 #include <memory>
 
@@ -34,16 +70,24 @@ bool AuroraTestModule::Initialize() {
 	AuroraLogger::Success("AuroraTestModule Initialized");
 
 	RunSparseSetTests();
-	RunComponentStorageTests();
-	RunRegistryComponentTests();
-	RunViewTests();
-	RunMultiViewTests();
-	RunSystemManagerTests();
-	RunECSTests();
-	RunEventSystemTests();
-	RunMovementSystemTests();
-	
 
+	RunComponentStorageTests();
+
+	RunRegistryComponentTests();
+
+	RunViewTests();
+
+	RunMultiViewTests();
+
+	RunSystemManagerTests();
+
+	RunMovementSystemTests();
+
+	RunCommandBufferTests();
+
+	RunECSTests();
+
+	RunEventSystemTests();
 
 	return true;
 }
@@ -440,5 +484,76 @@ void AuroraTestModule::RunMultiViewTests() {
 		AuroraLogger::Error(
 				"Unexpected entity count: " +
 				std::to_string(count));
+	}
+}
+
+// -----------------------------------------------------------------------------
+// Command Buffer Tests
+// -----------------------------------------------------------------------------
+
+void AuroraTestModule::RunCommandBufferTests() {
+	AuroraLogger::Section("Command Buffer Test");
+
+	Registry registry;
+
+	EntityCommandBuffer commandBuffer;
+
+	Entity player = registry.CreateEntity();
+
+	// -------------------------------------------------------------------------
+	// Entity Creation
+	// -------------------------------------------------------------------------
+
+	if (!registry.IsAlive(player)) {
+		AuroraLogger::Error(
+				"Player creation failed.");
+		return;
+	}
+
+	AuroraLogger::Success(
+			"Player created.");
+
+	// -------------------------------------------------------------------------
+	// Queue Destroy Command
+	// -------------------------------------------------------------------------
+
+	commandBuffer.Enqueue(
+			std::make_unique<DestroyEntityCommand>(player));
+
+	AuroraLogger::Info(
+			"DestroyEntityCommand queued.");
+
+	// -------------------------------------------------------------------------
+	// Entity should still be alive
+	// -------------------------------------------------------------------------
+
+	if (registry.IsAlive(player)) {
+		AuroraLogger::Success(
+				"Player still alive before Flush.");
+	} else {
+		AuroraLogger::Error(
+				"Player destroyed too early.");
+		return;
+	}
+
+	// -------------------------------------------------------------------------
+	// Execute Commands
+	// -------------------------------------------------------------------------
+
+	commandBuffer.Flush(registry);
+
+	AuroraLogger::Info(
+			"Command buffer flushed.");
+
+	// -------------------------------------------------------------------------
+	// Entity should now be destroyed
+	// -------------------------------------------------------------------------
+
+	if (!registry.IsAlive(player)) {
+		AuroraLogger::Success(
+				"Player destroyed after Flush.");
+	} else {
+		AuroraLogger::Error(
+				"Player was not destroyed.");
 	}
 }

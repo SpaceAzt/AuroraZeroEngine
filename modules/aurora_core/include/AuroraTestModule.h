@@ -27,10 +27,14 @@ private:
 
 	void RunSystemManagerTests();
 
+	void RunMovementSystemTests();
+
+	void RunCommandBufferTests();
+
 	void RunECSTests();
 
 	void RunEventSystemTests();
 
-	void RunMovementSystemTests();
+
 
 };
