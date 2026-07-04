@@ -21,6 +21,8 @@ private:
 
 	void RunRegistryComponentTests();
 
+	void RunViewTests();
+
 	void RunECSTests();
 
 	void RunEventSystemTests();

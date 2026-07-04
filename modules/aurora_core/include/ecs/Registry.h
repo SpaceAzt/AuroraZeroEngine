@@ -21,6 +21,7 @@
 
 #include "ecs/storage/ComponentStorage.h"
 #include "ecs/storage/IComponentStorage.h"
+#include "ecs/view/View.h"
 
 
 class Registry {
@@ -59,6 +60,9 @@ public:
 
 	template <typename T>
 	const T &GetComponent(Entity entity) const;
+
+	template <typename T>
+	View<T> CreateView();
 
 private:
 
@@ -184,4 +188,13 @@ T &Registry::GetComponent(Entity entity) {
 	}
 
 	return GetStorage<T>()->Get(entity.GetId());
+}
+
+// -----------------------------------------------------------------------------
+// CreateView
+// -----------------------------------------------------------------------------
+
+template <typename T>
+View<T> Registry::CreateView() {
+	return View<T>(GetStorage<T>());
 }

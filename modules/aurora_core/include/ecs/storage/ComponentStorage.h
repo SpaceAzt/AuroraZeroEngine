@@ -42,6 +42,14 @@ public:
 
 	const T &Get(EntityID entity) const;
 
+	// -----------------------------------------------------------------------------
+	// Storage Access
+	// -----------------------------------------------------------------------------
+
+	const SparseSet &GetSparseSet() const;
+
+	const std::vector<T> &GetComponents() const;
+
 private:
 	// -------------------------------------------------------------------------
 	// TODO(v0.4):
@@ -115,4 +123,22 @@ T &ComponentStorage<T>::Get(EntityID entity) {
 template <typename T>
 const T &ComponentStorage<T>::Get(EntityID entity) const {
 	return m_components[m_sparseSet.GetDenseIndex(entity)];
+}
+
+// -----------------------------------------------------------------------------
+// GetSparseSet
+// -----------------------------------------------------------------------------
+
+template <typename T>
+const SparseSet &ComponentStorage<T>::GetSparseSet() const {
+	return m_sparseSet;
+}
+
+// -----------------------------------------------------------------------------
+// GetComponents
+// -----------------------------------------------------------------------------
+
+template <typename T>
+const std::vector<T> &ComponentStorage<T>::GetComponents() const {
+	return m_components;
 }

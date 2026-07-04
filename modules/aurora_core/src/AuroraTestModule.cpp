@@ -29,6 +29,7 @@ bool AuroraTestModule::Initialize() {
 	RunSparseSetTests();
 	RunComponentStorageTests();
 	RunRegistryComponentTests();
+	RunViewTests();
     RunECSTests();
 	RunEventSystemTests();
 
@@ -224,4 +225,41 @@ void AuroraTestModule::RunRegistryComponentTests() {
 	} else {
 		AuroraLogger::Error("Registry component removal failed.");
 	}
+}
+
+// -----------------------------------------------------------------------------
+// View Tests
+// -----------------------------------------------------------------------------
+
+void AuroraTestModule::RunViewTests() {
+	AuroraLogger::Section("ECS View Test");
+
+	Registry registry;
+
+	Entity player = registry.CreateEntity();
+	Entity enemy = registry.CreateEntity();
+
+	registry.AddComponent<TransformComponent>(
+			player,
+			{ 10.0f, 20.0f, 30.0f });
+
+	registry.AddComponent<TransformComponent>(
+			enemy,
+			{ 40.0f, 50.0f, 60.0f });
+
+	auto view = registry.CreateView<TransformComponent>();
+
+	size_t count = 0;
+
+	for (EntityID entityId : view) {
+		++count;
+
+		AuroraLogger::Info(
+				"Entity ID: " +
+				std::to_string(entityId));
+	}
+
+	AuroraLogger::Success(
+			"View Count: " +
+			std::to_string(count));
 }
