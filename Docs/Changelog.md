@@ -4,6 +4,31 @@ All notable changes to AuroraZeroEngine are documented here.
 
 This project follows Semantic Versioning.
 
+
+
+---
+
+## v0.3.5
+
+### Added
+
+- ECS System interface (ISystem)
+- SystemManager
+- MovementSystem
+- VelocityComponent
+- System Manager tests
+
+### Changed
+
+- ECS now supports system registration and execution.
+- Added update pipeline for ECS systems.
+
+### Tested
+
+- System registration
+- System execution
+- MovementSystem update
+
 ---
 
 ## v0.3.4

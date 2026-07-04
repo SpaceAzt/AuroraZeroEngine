@@ -17,6 +17,7 @@
 
 // ECS Components
 #include "ecs/components/TransformComponent.h"
+#include "ecs/components/VelocityComponent.h"
 
 // Events
 #include "events/EventBus.h"
@@ -36,9 +37,12 @@ bool AuroraTestModule::Initialize() {
 	RunComponentStorageTests();
 	RunRegistryComponentTests();
 	RunViewTests();
+	RunMovementSystemTests();
 	RunSystemManagerTests();
     RunECSTests();
 	RunEventSystemTests();
+	
+
 
 	return true;
 }
@@ -291,4 +295,59 @@ void AuroraTestModule::RunSystemManagerTests() {
 
 	AuroraLogger::Success(
 			"SystemManager updated successfully.");
+}
+
+// -----------------------------------------------------------------------------
+// Movement System Tests
+// -----------------------------------------------------------------------------
+
+void AuroraTestModule::RunMovementSystemTests() {
+	AuroraLogger::Section("Movement System Test");
+
+	Registry registry;
+
+	SystemManager systems;
+
+	Entity player = registry.CreateEntity();
+
+	registry.AddComponent<TransformComponent>(
+			player,
+			{ 10.0f, 20.0f, 30.0f });
+
+	registry.AddComponent<VelocityComponent>(
+			player,
+			{ 5.0f, 0.0f, 0.0f });
+
+	auto &before =
+			registry.GetComponent<TransformComponent>(player);
+
+	AuroraLogger::Info(
+			"Before: (" +
+			std::to_string(before.x) + ", " +
+			std::to_string(before.y) + ", " +
+			std::to_string(before.z) + ")");
+
+	systems.AddSystem(
+			std::make_unique<MovementSystem>());
+
+	systems.Update(registry, 1.0f);
+
+	auto &after =
+			registry.GetComponent<TransformComponent>(player);
+
+	AuroraLogger::Info(
+			"After: (" +
+			std::to_string(after.x) + ", " +
+			std::to_string(after.y) + ", " +
+			std::to_string(after.z) + ")");
+
+	if (after.x == 15.0f &&
+			after.y == 20.0f &&
+			after.z == 30.0f) {
+		AuroraLogger::Success(
+				"Movement successful.");
+	} else {
+		AuroraLogger::Error(
+				"Movement failed.");
+	}
 }
