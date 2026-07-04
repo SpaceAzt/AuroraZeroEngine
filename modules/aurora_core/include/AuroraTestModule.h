@@ -15,12 +15,14 @@ private:
 	// Test Suites
 	// -------------------------------------------------------------------------
 
-	void RunEventSystemTests();
+	void RunSparseSetTests();
 
 	void RunComponentStorageTests();
 
+	void RunRegistryComponentTests();
+
 	void RunECSTests();
 
-	 void RunSparseSetTests();
+	void RunEventSystemTests();
 
 };

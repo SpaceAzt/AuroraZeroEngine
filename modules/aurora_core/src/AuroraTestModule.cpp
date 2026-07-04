@@ -28,6 +28,7 @@ bool AuroraTestModule::Initialize() {
 
 	RunSparseSetTests();
 	RunComponentStorageTests();
+	RunRegistryComponentTests();
     RunECSTests();
 	RunEventSystemTests();
 
@@ -179,3 +180,48 @@ void AuroraTestModule::Shutdown() {
 }
 
 
+// -----------------------------------------------------------------------------
+// Registry Component Tests
+// -----------------------------------------------------------------------------
+
+void AuroraTestModule::RunRegistryComponentTests() {
+	AuroraLogger::Section("Registry Component Test");
+
+	Registry registry;
+
+	Entity player = registry.CreateEntity();
+
+	registry.AddComponent<TransformComponent>(
+			player,
+			{ 10.0f, 20.0f, 30.0f });
+
+	if (registry.HasComponent<TransformComponent>(player)) {
+		AuroraLogger::Success("Registry component added.");
+	} else {
+		AuroraLogger::Error("Registry component NOT added.");
+		return;
+	}
+
+	auto &transform =
+			registry.GetComponent<TransformComponent>(player);
+
+	AuroraLogger::Info(
+			"Position: (" +
+			std::to_string(transform.x) + ", " +
+			std::to_string(transform.y) + ", " +
+			std::to_string(transform.z) + ")");
+
+	transform.x += 5.0f;
+
+	AuroraLogger::Info(
+			"Updated X: " +
+			std::to_string(transform.x));
+
+	registry.RemoveComponent<TransformComponent>(player);
+
+	if (!registry.HasComponent<TransformComponent>(player)) {
+		AuroraLogger::Success("Registry component removed.");
+	} else {
+		AuroraLogger::Error("Registry component removal failed.");
+	}
+}
