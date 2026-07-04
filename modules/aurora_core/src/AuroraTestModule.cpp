@@ -7,6 +7,10 @@
 #include "ecs/EntityManager.h"
 #include "ecs/Registry.h"
 
+// ECS Systems
+#include "ecs/systems/SystemManager.h"
+#include "ecs/systems/MovementSystem.h"
+
 // ECS Storage
 #include "ecs/storage/ComponentStorage.h"
 #include "ecs/storage/SparseSet.h"
@@ -19,6 +23,8 @@
 #include "events/engine/EngineStartedEvent.h"
 #include "events/engine/EngineStoppedEvent.h"
 
+#include <memory>
+
 // -----------------------------------------------------------------------------
 // Initialize
 // -----------------------------------------------------------------------------
@@ -30,6 +36,7 @@ bool AuroraTestModule::Initialize() {
 	RunComponentStorageTests();
 	RunRegistryComponentTests();
 	RunViewTests();
+	RunSystemManagerTests();
     RunECSTests();
 	RunEventSystemTests();
 
@@ -262,4 +269,26 @@ void AuroraTestModule::RunViewTests() {
 	AuroraLogger::Success(
 			"View Count: " +
 			std::to_string(count));
+}
+
+// -----------------------------------------------------------------------------
+// System Manager Tests
+// -----------------------------------------------------------------------------
+
+void AuroraTestModule::RunSystemManagerTests() {
+	AuroraLogger::Section("System Manager Test");
+
+	Registry registry;
+
+	SystemManager systemManager;
+
+	systemManager.AddSystem(
+			std::make_unique<MovementSystem>());
+
+	systemManager.Update(
+			registry,
+			1.0f);
+
+	AuroraLogger::Success(
+			"SystemManager updated successfully.");
 }

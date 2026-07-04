@@ -6,6 +6,10 @@ env.Append(CPPPATH=["#modules/aurora_core/include"])
 
 env.add_source_files(env.modules_sources, "*.cpp")
 env.add_source_files(env.modules_sources, "src/*.cpp")
+
 env.add_source_files(env.modules_sources, "src/events/*.cpp")
+
 env.add_source_files(env.modules_sources, "src/ecs/*.cpp")
 env.add_source_files(env.modules_sources, "src/ecs/storage/*.cpp")
+env.add_source_files(env.modules_sources, "src/ecs/view/*.cpp")
+env.add_source_files(env.modules_sources, "src/ecs/systems/*.cpp")

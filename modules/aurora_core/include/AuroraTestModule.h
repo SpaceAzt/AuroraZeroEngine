@@ -23,6 +23,8 @@ private:
 
 	void RunViewTests();
 
+	void RunSystemManagerTests();
+
 	void RunECSTests();
 
 	void RunEventSystemTests();
