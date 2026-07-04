@@ -37,10 +37,11 @@ bool AuroraTestModule::Initialize() {
 	RunComponentStorageTests();
 	RunRegistryComponentTests();
 	RunViewTests();
-	RunMovementSystemTests();
+	RunMultiViewTests();
 	RunSystemManagerTests();
-    RunECSTests();
+	RunECSTests();
 	RunEventSystemTests();
+	RunMovementSystemTests();
 	
 
 
@@ -349,5 +350,95 @@ void AuroraTestModule::RunMovementSystemTests() {
 	} else {
 		AuroraLogger::Error(
 				"Movement failed.");
+	}
+}
+
+// -----------------------------------------------------------------------------
+// MultiView Tests
+// -----------------------------------------------------------------------------
+
+void AuroraTestModule::RunMultiViewTests() {
+	AuroraLogger::Section("ECS MultiView Test");
+
+	Registry registry;
+
+	// -------------------------------------------------------------------------
+	// Create entities
+	// -------------------------------------------------------------------------
+
+	Entity entity1 = registry.CreateEntity();
+	Entity entity2 = registry.CreateEntity();
+	Entity entity3 = registry.CreateEntity();
+
+	// -------------------------------------------------------------------------
+	// Entity 1
+	// Transform + Velocity
+	// -------------------------------------------------------------------------
+
+	registry.AddComponent<TransformComponent>(
+			entity1,
+			{ 0.0f, 0.0f, 0.0f });
+
+	registry.AddComponent<VelocityComponent>(
+			entity1,
+			{ 1.0f, 0.0f, 0.0f });
+
+	// -------------------------------------------------------------------------
+	// Entity 2
+	// Transform only
+	// -------------------------------------------------------------------------
+
+	registry.AddComponent<TransformComponent>(
+			entity2,
+			{ 10.0f, 0.0f, 0.0f });
+
+	// -------------------------------------------------------------------------
+	// Entity 3
+	// Transform + Velocity
+	// -------------------------------------------------------------------------
+
+	registry.AddComponent<TransformComponent>(
+			entity3,
+			{ 20.0f, 0.0f, 0.0f });
+
+	registry.AddComponent<VelocityComponent>(
+			entity3,
+			{ 2.0f, 0.0f, 0.0f });
+
+	// -------------------------------------------------------------------------
+	// Create MultiView
+	// -------------------------------------------------------------------------
+
+	auto view =
+			registry.CreateMultiView<
+					TransformComponent,
+					VelocityComponent>();
+
+	// -------------------------------------------------------------------------
+	// Iterate
+	// -------------------------------------------------------------------------
+
+	size_t count = 0;
+
+	for (EntityID entity : view) {
+		AuroraLogger::Info(
+				"Entity ID: " +
+				std::to_string(entity));
+
+		++count;
+	}
+
+	// -------------------------------------------------------------------------
+	// Validation
+	// -------------------------------------------------------------------------
+
+	if (count == 2) {
+		AuroraLogger::Success(
+				"MultiView Count: " +
+				std::to_string(count));
+	} else {
+		AuroraLogger::Error(
+				"Unexpected entity count: " +
+				std::to_string(count));
 	}
 }

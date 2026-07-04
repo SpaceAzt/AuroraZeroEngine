@@ -5,6 +5,40 @@ All notable changes to AuroraZeroEngine are documented here.
 This project follows Semantic Versioning.
 
 
+---
+
+---
+
+---
+
+---
+
+---
+
+---
+
+---
+
+---
+
+## v0.3.6
+
+### Added
+
+- VelocityComponent
+- MovementSystem implementation
+- MovementSystem integration tests
+
+### Changed
+
+- ECS systems can now update component data.
+- TransformComponent is updated using VelocityComponent and delta time.
+
+### Tested
+
+- Entity movement
+- SystemManager execution
+- Component update pipeline
 
 ---
 

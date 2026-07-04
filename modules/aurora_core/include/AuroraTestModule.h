@@ -23,12 +23,14 @@ private:
 
 	void RunViewTests();
 
-	void RunMovementSystemTests();
+	void RunMultiViewTests();
 
 	void RunSystemManagerTests();
 
 	void RunECSTests();
 
 	void RunEventSystemTests();
+
+	void RunMovementSystemTests();
 
 };

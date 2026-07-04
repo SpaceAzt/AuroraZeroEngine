@@ -22,6 +22,7 @@
 #include "ecs/storage/ComponentStorage.h"
 #include "ecs/storage/IComponentStorage.h"
 #include "ecs/view/View.h"
+#include "ecs/view/MultiView.h"
 
 
 class Registry {
@@ -63,6 +64,9 @@ public:
 
 	template <typename T>
 	View<T> CreateView();
+
+	template <typename... Components>
+	MultiView<Components...> CreateMultiView();
 
 private:
 
@@ -197,4 +201,14 @@ T &Registry::GetComponent(Entity entity) {
 template <typename T>
 View<T> Registry::CreateView() {
 	return View<T>(GetStorage<T>());
+}
+
+// -----------------------------------------------------------------------------
+// CreateMultiView
+// -----------------------------------------------------------------------------
+
+template <typename... Components>
+MultiView<Components...> Registry::CreateMultiView() {
+	return MultiView<Components...>(
+			GetStorage<Components>()...);
 }
