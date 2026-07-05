@@ -32,4 +32,9 @@ private:
 	// -------------------------------------------------------------------------
 
 	void RunLinearAllocatorTests();
+	void RunStackAllocatorTests();
+	void RunPoolAllocatorTests();
+	void RunArenaAllocatorTests();
+	void RunMemoryManagerTests();
+
 };

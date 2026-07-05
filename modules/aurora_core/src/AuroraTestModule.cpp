@@ -56,6 +56,10 @@
 // -----------------------------------------------------------------------------
 
 #include "memory/LinearAllocator.h"
+#include "memory/StackAllocator.h"
+#include "memory/PoolAllocator.h"
+#include "memory/ArenaAllocator.h"
+#include "memory/MemoryManager.h"
 
 // -----------------------------------------------------------------------------
 // STL
@@ -103,6 +107,10 @@ bool AuroraTestModule::Initialize() {
 	// -------------------------------------------------------------------------
 
 	RunLinearAllocatorTests();
+	RunStackAllocatorTests();
+	RunPoolAllocatorTests();
+	RunArenaAllocatorTests();
+	RunMemoryManagerTests();
 
 	return true;
 }
@@ -816,5 +824,567 @@ void AuroraTestModule::RunLinearAllocatorTests() {
 	} else {
 		AuroraLogger::Error(
 				"Allocator exceeded capacity.");
+	}
+}
+
+
+
+// -----------------------------------------------------------------------------
+// Stack Allocator Tests
+// -----------------------------------------------------------------------------
+
+void AuroraTestModule::RunStackAllocatorTests() {
+	AuroraLogger::Section(
+			"Stack Allocator Test");
+
+	StackAllocator allocator(1024);
+
+	// -------------------------------------------------------------------------
+	// Initial State
+	// -------------------------------------------------------------------------
+
+	if (allocator.Capacity() == 1024) {
+		AuroraLogger::Success(
+				"Allocator capacity correct.");
+	} else {
+		AuroraLogger::Error(
+				"Allocator capacity incorrect.");
+	}
+
+	if (allocator.Used() == 0) {
+		AuroraLogger::Success(
+				"Allocator usage starts at zero.");
+	} else {
+		AuroraLogger::Error(
+				"Allocator usage should be zero.");
+	}
+
+	if (allocator.Remaining() == 1024) {
+		AuroraLogger::Success(
+				"Allocator remaining memory correct.");
+	} else {
+		AuroraLogger::Error(
+				"Allocator remaining memory incorrect.");
+	}
+
+	// -------------------------------------------------------------------------
+	// First Allocation
+	// -------------------------------------------------------------------------
+
+	void *block1 = allocator.Allocate(128);
+
+	if (block1 != nullptr) {
+		AuroraLogger::Success(
+				"First allocation successful.");
+	} else {
+		AuroraLogger::Error(
+				"First allocation failed.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Usage
+	// -------------------------------------------------------------------------
+
+	if (allocator.Used() == 128) {
+		AuroraLogger::Success(
+				"Allocator usage updated.");
+	} else {
+		AuroraLogger::Error(
+				"Allocator usage incorrect.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Remaining
+	// -------------------------------------------------------------------------
+
+	if (allocator.Remaining() == 896) {
+		AuroraLogger::Success(
+				"Remaining memory updated.");
+	} else {
+		AuroraLogger::Error(
+				"Remaining memory incorrect.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Reset
+	// -------------------------------------------------------------------------
+
+	allocator.Reset();
+
+	if (allocator.Used() == 0) {
+		AuroraLogger::Success(
+				"Allocator reset successful.");
+	} else {
+		AuroraLogger::Error(
+				"Allocator reset failed.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Allocation After Reset
+	// -------------------------------------------------------------------------
+
+	void *block2 = allocator.Allocate(512);
+
+	AuroraLogger::Info(
+			"Used = " + std::to_string(allocator.Used()));
+
+
+	if (block2 != nullptr) {
+		AuroraLogger::Success(
+				"Allocation after reset successful.");
+	} else {
+		AuroraLogger::Error(
+				"Allocation after reset failed.");
+	}
+
+	if (allocator.Used() == 512) {
+		AuroraLogger::Success(
+				"Allocator reused correctly.");
+	} else {
+		AuroraLogger::Error(
+				"Allocator reuse failed.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Out Of Memory
+	// -------------------------------------------------------------------------
+
+	void *block3 = allocator.Allocate(2048);
+
+	if (block3 == nullptr) {
+		AuroraLogger::Success(
+				"Out of memory handled correctly.");
+	} else {
+		AuroraLogger::Error(
+				"Allocator exceeded capacity.");
+	}
+}
+
+
+// -----------------------------------------------------------------------------
+// Pool Allocator Tests
+// -----------------------------------------------------------------------------
+
+void AuroraTestModule::RunPoolAllocatorTests() {
+	AuroraLogger::Section(
+			"Pool Allocator Test");
+
+	PoolAllocator allocator(
+			64, // Block Size
+			16); // Block Count
+
+	// -------------------------------------------------------------------------
+	// Initial State
+	// -------------------------------------------------------------------------
+
+	if (allocator.BlockSize() == 64) {
+		AuroraLogger::Success(
+				"Block size correct.");
+	} else {
+		AuroraLogger::Error(
+				"Block size incorrect.");
+	}
+
+	if (allocator.BlockCount() == 16) {
+		AuroraLogger::Success(
+				"Block count correct.");
+	} else {
+		AuroraLogger::Error(
+				"Block count incorrect.");
+	}
+
+	if (allocator.Capacity() == 1024) {
+		AuroraLogger::Success(
+				"Allocator capacity correct.");
+	} else {
+		AuroraLogger::Error(
+				"Allocator capacity incorrect.");
+	}
+
+	if (allocator.UsedBlocks() == 0) {
+		AuroraLogger::Success(
+				"Allocator starts empty.");
+	} else {
+		AuroraLogger::Error(
+				"Allocator should start empty.");
+	}
+
+	if (allocator.FreeBlocks() == 16) {
+		AuroraLogger::Success(
+				"Free block count correct.");
+	} else {
+		AuroraLogger::Error(
+				"Free block count incorrect.");
+	}
+
+	// -------------------------------------------------------------------------
+	// First Allocation
+	// -------------------------------------------------------------------------
+
+	void *block1 = allocator.Allocate(64);
+
+	if (block1 != nullptr) {
+		AuroraLogger::Success(
+				"First allocation successful.");
+	} else {
+		AuroraLogger::Error(
+				"First allocation failed.");
+	}
+
+	if (allocator.UsedBlocks() == 1) {
+		AuroraLogger::Success(
+				"Used block count updated.");
+	} else {
+		AuroraLogger::Error(
+				"Used block count incorrect.");
+	}
+
+	if (allocator.FreeBlocks() == 15) {
+		AuroraLogger::Success(
+				"Free block count updated.");
+	} else {
+		AuroraLogger::Error(
+				"Free block count incorrect.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Oversized Allocation
+	// -------------------------------------------------------------------------
+
+	void *invalid = allocator.Allocate(128);
+
+	if (invalid == nullptr) {
+		AuroraLogger::Success(
+				"Oversized allocation rejected.");
+	} else {
+		AuroraLogger::Error(
+				"Oversized allocation accepted.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Fill Pool
+	// -------------------------------------------------------------------------
+
+	for (int i = 0; i < 15; ++i) {
+		allocator.Allocate(64);
+	}
+
+	if (allocator.FreeBlocks() == 0) {
+		AuroraLogger::Success(
+				"Pool completely allocated.");
+	} else {
+		AuroraLogger::Error(
+				"Pool allocation count incorrect.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Out Of Memory
+	// -------------------------------------------------------------------------
+
+	void *overflow = allocator.Allocate(64);
+
+	if (overflow == nullptr) {
+		AuroraLogger::Success(
+				"Out of memory handled correctly.");
+	} else {
+		AuroraLogger::Error(
+				"Allocator exceeded pool size.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Free
+	// -------------------------------------------------------------------------
+
+	allocator.Free(block1);
+
+	if (allocator.FreeBlocks() == 1) {
+		AuroraLogger::Success(
+				"Free successful.");
+	} else {
+		AuroraLogger::Error(
+				"Free failed.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Reset
+	// -------------------------------------------------------------------------
+
+	allocator.Reset();
+
+	if (allocator.UsedBlocks() == 0) {
+		AuroraLogger::Success(
+				"Allocator reset successful.");
+	} else {
+		AuroraLogger::Error(
+				"Allocator reset failed.");
+	}
+
+	if (allocator.FreeBlocks() == 16) {
+		AuroraLogger::Success(
+				"Pool restored successfully.");
+	} else {
+		AuroraLogger::Error(
+				"Pool restore failed.");
+	}
+}
+
+// -----------------------------------------------------------------------------
+// Arena Allocator Tests
+// -----------------------------------------------------------------------------
+
+void AuroraTestModule::RunArenaAllocatorTests() {
+	AuroraLogger::Section(
+			"Arena Allocator Test");
+
+	ArenaAllocator allocator(1024);
+
+	// -------------------------------------------------------------------------
+	// Initial State
+	// -------------------------------------------------------------------------
+
+	if (allocator.Capacity() == 1024) {
+		AuroraLogger::Success("Allocator capacity correct.");
+	} else {
+		AuroraLogger::Error("Allocator capacity incorrect.");
+	}
+
+	if (allocator.Used() == 0) {
+		AuroraLogger::Success("Allocator usage starts at zero.");
+	} else {
+		AuroraLogger::Error("Allocator usage should be zero.");
+	}
+
+	if (allocator.Remaining() == 1024) {
+		AuroraLogger::Success("Allocator remaining memory correct.");
+	} else {
+		AuroraLogger::Error("Allocator remaining memory incorrect.");
+	}
+
+	// -------------------------------------------------------------------------
+	// First Allocation
+	// -------------------------------------------------------------------------
+
+	void *block1 = allocator.Allocate(128);
+
+	if (block1 != nullptr) {
+		AuroraLogger::Success("First allocation successful.");
+	} else {
+		AuroraLogger::Error("First allocation failed.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Multiple Allocation
+	// -------------------------------------------------------------------------
+
+	void *block2 = allocator.Allocate(256);
+
+	if (block2 != nullptr) {
+		AuroraLogger::Success("Second allocation successful.");
+	} else {
+		AuroraLogger::Error("Second allocation failed.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Usage
+	// -------------------------------------------------------------------------
+
+	if (allocator.Used() == 384) {
+		AuroraLogger::Success("Allocator usage updated.");
+	} else {
+		AuroraLogger::Error("Allocator usage incorrect.");
+	}
+
+	if (allocator.Remaining() == 640) {
+		AuroraLogger::Success("Remaining memory updated.");
+	} else {
+		AuroraLogger::Error("Remaining memory incorrect.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Reset
+	// -------------------------------------------------------------------------
+
+	allocator.Reset();
+
+	if (allocator.Used() == 0) {
+		AuroraLogger::Success("Allocator reset successful.");
+	} else {
+		AuroraLogger::Error("Allocator reset failed.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Allocation After Reset
+	// -------------------------------------------------------------------------
+
+	void *block3 = allocator.Allocate(512);
+
+	if (block3 != nullptr) {
+		AuroraLogger::Success("Allocation after reset successful.");
+	} else {
+		AuroraLogger::Error("Allocation after reset failed.");
+	}
+
+	if (allocator.Used() == 512) {
+		AuroraLogger::Success("Allocator reused correctly.");
+	} else {
+		AuroraLogger::Error("Allocator reuse failed.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Out Of Memory
+	// -------------------------------------------------------------------------
+
+	void *block4 = allocator.Allocate(2048);
+
+	if (block4 == nullptr) {
+		AuroraLogger::Success("Out of memory handled correctly.");
+	} else {
+		AuroraLogger::Error("Allocator exceeded capacity.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Memory Stats
+	// -------------------------------------------------------------------------
+
+	const MemoryStats &stats = allocator.GetStats();
+
+	if (stats.allocationCount == 3) {
+		AuroraLogger::Success("Allocation count correct.");
+	} else {
+		AuroraLogger::Error("Allocation count incorrect.");
+	}
+
+	if (stats.peakUsage == 512) {
+		AuroraLogger::Success("Peak usage correct.");
+	} else {
+		AuroraLogger::Error("Peak usage incorrect.");
+	}
+}
+
+// -----------------------------------------------------------------------------
+// Memory Manager Tests
+// -----------------------------------------------------------------------------
+
+void AuroraTestModule::RunMemoryManagerTests() {
+	AuroraLogger::Section(
+			"Memory Manager Test");
+
+	MemoryManager memory;
+
+	// -------------------------------------------------------------------------
+	// Initialization
+	// -------------------------------------------------------------------------
+
+	if (!memory.IsInitialized()) {
+		AuroraLogger::Success(
+				"Memory manager starts uninitialized.");
+	} else {
+		AuroraLogger::Error(
+				"Memory manager initialization state incorrect.");
+	}
+
+	memory.Initialize();
+
+	if (memory.IsInitialized()) {
+		AuroraLogger::Success(
+				"Memory manager initialized.");
+	} else {
+		AuroraLogger::Error(
+				"Memory manager failed to initialize.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Allocator Access
+	// -------------------------------------------------------------------------
+
+	if (&memory.GetLinearAllocator() != nullptr) {
+		AuroraLogger::Success(
+				"Linear allocator available.");
+	} else {
+		AuroraLogger::Error(
+				"Linear allocator unavailable.");
+	}
+
+	if (&memory.GetStackAllocator() != nullptr) {
+		AuroraLogger::Success(
+				"Stack allocator available.");
+	} else {
+		AuroraLogger::Error(
+				"Stack allocator unavailable.");
+	}
+
+	if (&memory.GetPoolAllocator() != nullptr) {
+		AuroraLogger::Success(
+				"Pool allocator available.");
+	} else {
+		AuroraLogger::Error(
+				"Pool allocator unavailable.");
+	}
+
+	if (&memory.GetArenaAllocator() != nullptr) {
+		AuroraLogger::Success(
+				"Arena allocator available.");
+	} else {
+		AuroraLogger::Error(
+				"Arena allocator unavailable.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Total Memory
+	// -------------------------------------------------------------------------
+
+	if (memory.TotalMemory() > 0) {
+		AuroraLogger::Success(
+				"Total memory calculated.");
+	} else {
+		AuroraLogger::Error(
+				"Total memory calculation failed.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Reset
+	// -------------------------------------------------------------------------
+	void *linear =
+			memory.GetLinearAllocator().Allocate(128);
+
+	void *stack =
+			memory.GetStackAllocator().Allocate(128);
+
+	void *arena =
+			memory.GetArenaAllocator().Allocate(128);
+
+	if (linear && stack && arena) {
+		AuroraLogger::Success(
+				"Allocations successful.");
+	} else {
+		AuroraLogger::Error(
+				"Allocation failed.");
+	}
+
+	memory.Reset();
+
+	if (memory.GetLinearAllocator().Used() == 0 &&
+			memory.GetStackAllocator().Used() == 0 &&
+			memory.GetArenaAllocator().Used() == 0) {
+		AuroraLogger::Success(
+				"Memory manager reset successful.");
+
+	} else {
+		AuroraLogger::Error(
+				"Memory manager reset failed.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Shutdown
+	// -------------------------------------------------------------------------
+
+	memory.Shutdown();
+
+	if (!memory.IsInitialized()) {
+		AuroraLogger::Success(
+				"Memory manager shutdown successful.");
+	} else {
+		AuroraLogger::Error(
+				"Memory manager shutdown failed.");
 	}
 }

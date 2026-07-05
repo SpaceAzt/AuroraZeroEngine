@@ -15,29 +15,45 @@ This project follows Semantic Versioning.
 
 ---
 
-## v0.4.0
+---
+
+## v0.5.0 - Memory Foundation
+
+Release Date: 2026-07-05
 
 ### Added
 
-- ComponentManager
-- Automatic component storage registration
-- Component storage lookup
-- Storage statistics
-- Entity-wide component removal
-- ComponentManager unit tests
+- Memory subsystem foundation
+- IAllocator interface
+- AllocationInfo structure
+- MemoryStats structure
+- LinearAllocator
+- StackAllocator
+- PoolAllocator
+- ArenaAllocator
+- MemoryManager
+- Complete allocator test suite
 
-### Changed
+### Features
 
-- Registry now delegates storage management to ComponentManager.
-- DestroyEntity() now removes all components before destroying entities.
-- Component lookup uses ComponentManager.
+- Centralized memory management
+- Allocator statistics
+- Memory reset support
+- Memory usage tracking
+- Peak memory tracking
+- Allocation counters
 
-### Improved
+### Testing
 
-- ECS architecture separation
-- Storage ownership
-- Type-safe storage access
-- Registry maintainability
+- LinearAllocator tests
+- StackAllocator tests
+- PoolAllocator tests
+- ArenaAllocator tests
+- MemoryManager tests
+
+### Notes
+
+This version completes Aurora's first memory management foundation and prepares the engine for future systems such as Renderer, Physics, Scene, Resource Management and Aurora Sentinel.
 
 ---
 
