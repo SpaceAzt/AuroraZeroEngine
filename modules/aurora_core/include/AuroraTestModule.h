@@ -35,6 +35,6 @@ private:
 
 	void RunEventSystemTests();
 
-
+	void RunComponentManagerTests();
 
 };

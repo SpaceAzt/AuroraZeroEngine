@@ -7,9 +7,10 @@
 #include "AuroraTestModule.h"
 
 // -----------------------------------------------------------------------------
-// ECS
+// ECS Core
 // -----------------------------------------------------------------------------
 
+#include "ecs/ComponentManager.h"
 #include "ecs/EntityManager.h"
 #include "ecs/Registry.h"
 
@@ -28,10 +29,12 @@
 #include "ecs/storage/SparseSet.h"
 
 // -----------------------------------------------------------------------------
-// ECS View
+// ECS Commands
 // -----------------------------------------------------------------------------
 
-// (Şimdilik View veya MultiView header'larını doğrudan kullanmıyoruz.)
+#include "ecs/commands/CreateEntityCommand.h"
+#include "ecs/commands/DestroyEntityCommand.h"
+#include "ecs/commands/EntityCommandBuffer.h"
 
 // -----------------------------------------------------------------------------
 // ECS Systems
@@ -39,14 +42,6 @@
 
 #include "ecs/systems/MovementSystem.h"
 #include "ecs/systems/SystemManager.h"
-
-// -----------------------------------------------------------------------------
-// ECS Commands
-// -----------------------------------------------------------------------------
-
-#include "ecs/commands/EntityCommandBuffer.h"
-#include "ecs/commands/CreateEntityCommand.h"
-#include "ecs/commands/DestroyEntityCommand.h"
 
 // -----------------------------------------------------------------------------
 // Events
@@ -61,6 +56,18 @@
 // -----------------------------------------------------------------------------
 
 #include <memory>
+
+// -----------------------------------------------------------------------------
+// Test Components
+// -----------------------------------------------------------------------------
+
+namespace {
+
+struct DummyComponent {
+	int value = 0;
+};
+
+} // namespace
 
 // -----------------------------------------------------------------------------
 // Initialize
@@ -88,6 +95,8 @@ bool AuroraTestModule::Initialize() {
 	RunECSTests();
 
 	RunEventSystemTests();
+
+	RunComponentManagerTests();
 
 	return true;
 }
@@ -555,5 +564,130 @@ void AuroraTestModule::RunCommandBufferTests() {
 	} else {
 		AuroraLogger::Error(
 				"Player was not destroyed.");
+	}
+}
+
+// -----------------------------------------------------------------------------
+// Component Manager Tests
+// -----------------------------------------------------------------------------
+
+void AuroraTestModule::RunComponentManagerTests() {
+	AuroraLogger::Section("Component Manager Test");
+
+	ComponentManager componentManager;
+
+	// -------------------------------------------------------------------------
+	// Storage should not exist initially
+	// -------------------------------------------------------------------------
+
+	if (!componentManager.HasStorage<TransformComponent>()) {
+		AuroraLogger::Success(
+				"Transform storage not registered.");
+	} else {
+		AuroraLogger::Error(
+				"Transform storage should not exist.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Register Transform storage
+	// -------------------------------------------------------------------------
+
+	componentManager.RegisterStorage<TransformComponent>();
+
+	if (componentManager.HasStorage<TransformComponent>()) {
+		AuroraLogger::Success(
+				"Transform storage registered.");
+	} else {
+		AuroraLogger::Error(
+				"Transform storage registration failed.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Retrieve Transform storage
+	// -------------------------------------------------------------------------
+
+	auto *transformStorage =
+			componentManager.GetStorage<TransformComponent>();
+
+	if (transformStorage != nullptr) {
+		AuroraLogger::Success(
+				"Transform storage retrieved.");
+	} else {
+		AuroraLogger::Error(
+				"Transform storage is nullptr.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Duplicate registration
+	// -------------------------------------------------------------------------
+
+	componentManager.RegisterStorage<TransformComponent>();
+
+	AuroraLogger::Success(
+			"Duplicate registration ignored.");
+
+	// -------------------------------------------------------------------------
+	// Register Velocity storage
+	// -------------------------------------------------------------------------
+
+	componentManager.RegisterStorage<VelocityComponent>();
+
+	if (componentManager.HasStorage<VelocityComponent>()) {
+		AuroraLogger::Success(
+				"Velocity storage registered.");
+	} else {
+		AuroraLogger::Error(
+				"Velocity storage registration failed.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Retrieve Velocity storage
+	// -------------------------------------------------------------------------
+
+	auto *velocityStorage =
+			componentManager.GetStorage<VelocityComponent>();
+
+	if (velocityStorage != nullptr) {
+		AuroraLogger::Success(
+				"Velocity storage retrieved.");
+	} else {
+		AuroraLogger::Error(
+				"Velocity storage is nullptr.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Storages must be different
+	// -------------------------------------------------------------------------
+
+	if (transformStorage !=
+			reinterpret_cast<ComponentStorage<TransformComponent> *>(velocityStorage)) {
+		AuroraLogger::Success(
+				"Storages are unique.");
+	} else {
+		AuroraLogger::Error(
+				"Storages should be unique.");
+	}
+
+	// -------------------------------------------------------------------------
+	// Missing storage
+	// -------------------------------------------------------------------------
+
+	if (!componentManager.HasStorage<DummyComponent>()) {
+		AuroraLogger::Success(
+				"Dummy storage correctly absent.");
+	} else {
+		AuroraLogger::Error(
+				"Dummy storage should not exist.");
+	}
+
+	auto *dummyStorage =
+			componentManager.GetStorage<DummyComponent>();
+
+	if (dummyStorage == nullptr) {
+		AuroraLogger::Success(
+				"Missing storage returned nullptr.");
+	} else {
+		AuroraLogger::Error(
+				"Expected nullptr.");
 	}
 }

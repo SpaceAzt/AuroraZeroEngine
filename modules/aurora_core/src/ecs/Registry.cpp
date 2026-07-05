@@ -54,9 +54,22 @@ void Registry::DestroyEntity(Entity entity) {
 // IsAlive
 // -----------------------------------------------------------------------------
 
+
 bool Registry::IsAlive(Entity entity) const {
 	return std::find(
 				   m_entities.begin(),
 				   m_entities.end(),
 				   entity) != m_entities.end();
+}
+
+// -----------------------------------------------------------------------------
+// GetComponentManager
+// -----------------------------------------------------------------------------
+
+ComponentManager &Registry::GetComponentManager() {
+	return m_componentManager;
+}
+
+const ComponentManager &Registry::GetComponentManager() const {
+	return m_componentManager;
 }

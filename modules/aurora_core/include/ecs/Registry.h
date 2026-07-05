@@ -13,9 +13,6 @@
 
 #include "Entity.h"
 
-#include <memory>
-#include <typeindex>
-#include <unordered_map>
 #include <vector>
 #include <stdexcept>
 
@@ -23,6 +20,7 @@
 #include "ecs/storage/IComponentStorage.h"
 #include "ecs/view/View.h"
 #include "ecs/view/MultiView.h"
+#include "ecs/ComponentManager.h"
 
 
 class Registry {
@@ -68,55 +66,66 @@ public:
 	template <typename... Components>
 	MultiView<Components...> CreateMultiView();
 
+	template <typename T>
+	const ComponentStorage<T> *GetStorage() const;
+
+	// -------------------------------------------------------------------------
+	// Managers
+	// -------------------------------------------------------------------------
+
+	ComponentManager &GetComponentManager();
+
+	const ComponentManager &GetComponentManager() const;
+
 private:
 
 	// -------------------------------------------------------------------------
 	// Storage Access
-	// ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
 
-	 template <typename T>
+	template <typename T>
 	ComponentStorage<T> *GetStorage();
 
-	
-	 // ------------------------------------------------------------------------
-	 // TODO(v0.4):
-	 // Implement ECS Views and Queries for efficient component iteration.
-     // ------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
+	// Managers
+	// -------------------------------------------------------------------------
 
-	 Entity::Id m_nextEntityId = 1;
+	ComponentManager m_componentManager;
 
-	 std::vector<Entity> m_entities;
+	// -------------------------------------------------------------------------
+	// Entity Storage
+	// -------------------------------------------------------------------------
 
-	 std::unordered_map<
-			 std::type_index,
-			 std::unique_ptr<IComponentStorage>>
-			 m_componentStorages;
+	Entity::Id m_nextEntityId = 1;
+
+	std::vector<Entity> m_entities;
 };
 
+
 // -----------------------------------------------------------------------------
-// GetStorage
-//
-// Returns the storage for component type T.
-// Creates it on first use.
+// Get Storage
 // -----------------------------------------------------------------------------
 
 template <typename T>
 ComponentStorage<T> *Registry::GetStorage() {
-	const std::type_index type(typeid(T));
-
-	auto it = m_componentStorages.find(type);
-
-	if (it == m_componentStorages.end()) {
-		auto storage = std::make_unique<ComponentStorage<T>>();
-
-		ComponentStorage<T>* ptr = storage.get();
-
-		m_componentStorages.emplace(type, std::move(storage));
-
-		return ptr;
+	if (!m_componentManager.HasStorage<T>()) {
+		m_componentManager.RegisterStorage<T>();
 	}
 
-	return static_cast<ComponentStorage<T>* >(it->second.get());
+	return m_componentManager.GetStorage<T>();
+}
+
+// -----------------------------------------------------------------------------
+// Get Storage (Const)
+// -----------------------------------------------------------------------------
+
+template <typename T>
+const ComponentStorage<T> *Registry::GetStorage() const {
+	if (!m_componentManager.HasStorage<T>()) {
+		return nullptr;
+	}
+
+	return m_componentManager.GetStorage<T>();
 }
 
 // -----------------------------------------------------------------------------
@@ -135,44 +144,31 @@ template <typename T>
 void Registry::RemoveComponent(Entity entity) {
 	GetStorage<T>()->Remove(entity.GetId());
 }
+
 // -----------------------------------------------------------------------------
 // HasComponent
 // -----------------------------------------------------------------------------
 
 template <typename T>
 bool Registry::HasComponent(Entity entity) const {
-	const std::type_index type(typeid(T));
+	const auto *storage = GetStorage<T>();
 
-	auto it = m_componentStorages.find(type);
-
-	if (it == m_componentStorages.end()) {
+	if (storage == nullptr) {
 		return false;
 	}
-
-	auto* storage =
-			static_cast<ComponentStorage<T> *>(it->second.get());
 
 	return storage->Has(entity.GetId());
 }
 
 // -----------------------------------------------------------------------------
-// GetComponent (const)
+// GetComponent (Const)
 // -----------------------------------------------------------------------------
 
 template <typename T>
 const T &Registry::GetComponent(Entity entity) const {
-	const std::type_index type(typeid(T));
+	const auto *storage = GetStorage<T>();
 
-	auto it = m_componentStorages.find(type);
-
-	if (it == m_componentStorages.end()) {
-		throw std::runtime_error("Component storage not found.");
-	}
-
-	auto *storage =
-			static_cast<ComponentStorage<T>* >(it->second.get());
-
-	if (!storage->Has(entity.GetId())) {
+	if (storage == nullptr || !storage->Has(entity.GetId())) {
 		throw std::runtime_error(
 				"Entity does not have requested component.");
 	}
@@ -212,3 +208,4 @@ MultiView<Components...> Registry::CreateMultiView() {
 	return MultiView<Components...>(
 			GetStorage<Components>()...);
 }
+
