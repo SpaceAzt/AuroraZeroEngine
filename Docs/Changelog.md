@@ -15,6 +15,79 @@ This project follows Semantic Versioning.
 
 ---
 
+## v0.4.0
+
+### Added
+
+- ComponentManager
+- Automatic component storage registration
+- Component storage lookup
+- Storage statistics
+- Entity-wide component removal
+- ComponentManager unit tests
+
+### Changed
+
+- Registry now delegates storage management to ComponentManager.
+- DestroyEntity() now removes all components before destroying entities.
+- Component lookup uses ComponentManager.
+
+### Improved
+
+- ECS architecture separation
+- Storage ownership
+- Type-safe storage access
+- Registry maintainability
+
+---
+
+## v0.4.0
+
+### Added
+
+- ComponentManager
+- Automatic component storage registration
+- Component storage lookup
+- Storage statistics
+- Entity-wide component removal
+- ComponentManager unit tests
+
+### Changed
+
+- Registry now delegates storage management to ComponentManager.
+- DestroyEntity() now removes all components before destroying entities.
+- Component lookup now uses ComponentManager.
+
+### Improved
+
+- ECS architecture separation
+- Storage ownership
+- Registry maintainability
+
+---
+
+## v0.3.9
+
+### Added
+
+- ICommand interface
+- EntityCommandBuffer
+- CreateEntityCommand
+- DestroyEntityCommand
+- Deferred ECS command execution
+- Command Buffer unit tests
+
+### Changed
+
+- Registry supports deferred entity destruction through commands.
+- ECS command execution is now centralized through EntityCommandBuffer.
+
+### Improved
+
+- ECS command architecture
+- Deferred execution workflow
+- Test coverage for command system
+
 ---
 
 ## v0.3.8
