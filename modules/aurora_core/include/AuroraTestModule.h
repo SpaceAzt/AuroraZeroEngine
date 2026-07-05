@@ -16,25 +16,20 @@ private:
 	// -------------------------------------------------------------------------
 
 	void RunSparseSetTests();
-
 	void RunComponentStorageTests();
-
 	void RunRegistryComponentTests();
-
 	void RunViewTests();
-
 	void RunMultiViewTests();
-
 	void RunSystemManagerTests();
-
-	void RunMovementSystemTests();
-
-	void RunCommandBufferTests();
-
 	void RunECSTests();
-
 	void RunEventSystemTests();
-
+	void RunMovementSystemTests();
+	void RunCommandBufferTests();
 	void RunComponentManagerTests();
 
+	// -------------------------------------------------------------------------
+	// Memory Tests
+	// -------------------------------------------------------------------------
+
+	void RunLinearAllocatorTests();
 };
