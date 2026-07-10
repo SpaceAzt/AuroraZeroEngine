@@ -1,5 +1,5 @@
 #include "register_types.h"
-#include "include/AuroraApplication.h"
+#include "AuroraApplication.h"
 
 #include <iostream>
 

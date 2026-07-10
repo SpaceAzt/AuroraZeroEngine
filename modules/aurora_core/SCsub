@@ -1,49 +1,153 @@
 Import("env")
 
-env.Append(CPPPATH=["#modules/aurora_core/include"])
+# -----------------------------------------------------------------------------
+# Include Paths
+# -----------------------------------------------------------------------------
 
+env.Append(CPPPATH=[
+    "#modules/aurora_core/core/include",
+    "#modules/aurora_core/memory/include",
+    "#modules/aurora_core/events/include",
+    "#modules/aurora_core/ecs/include",
+])
+
+# -----------------------------------------------------------------------------
 # Core
-env.add_source_files(env.modules_sources, "*.cpp")
-env.add_source_files(env.modules_sources, "src/*.cpp")
+# -----------------------------------------------------------------------------
 
-# Events
-env.add_source_files(env.modules_sources, "src/events/*.cpp")
+env.add_source_files(
+    env.modules_sources,
+    "core/src/*.cpp"
+)
 
-# ECS
-env.add_source_files(env.modules_sources, "src/ecs/*.cpp")
-env.add_source_files(env.modules_sources, "src/ecs/storage/*.cpp")
-env.add_source_files(env.modules_sources, "src/ecs/view/*.cpp")
-env.add_source_files(env.modules_sources, "src/ecs/systems/*.cpp")
-env.add_source_files(env.modules_sources, "src/ecs/commands/*.cpp")
+# -----------------------------------------------------------------------------
+# Module Registration
+# -----------------------------------------------------------------------------
+
+env.add_source_files(
+    env.modules_sources,
+    "register_types.cpp"
+)
 
 # -----------------------------------------------------------------------------
 # Memory
 # -----------------------------------------------------------------------------
 
-env.add_source_files(env.modules_sources, "src/memory/*.cpp")
-
-
+env.add_source_files(
+    env.modules_sources,
+    "memory/src/*.cpp"
+)
 
 # -----------------------------------------------------------------------------
 # Events
 # -----------------------------------------------------------------------------
 
+env.add_source_files(
+    env.modules_sources,
+    "events/src/*.cpp"
+)
+
+# -----------------------------------------------------------------------------
+# ECS
+# -----------------------------------------------------------------------------
+
+env.add_source_files(
+    env.modules_sources,
+    "ecs/src/*.cpp"
+)
+
+env.add_source_files(
+    env.modules_sources,
+    "ecs/src/storage/*.cpp"
+)
+
+env.add_source_files(
+    env.modules_sources,
+    "ecs/src/view/*.cpp"
+)
+
+env.add_source_files(
+    env.modules_sources,
+    "ecs/src/systems/*.cpp"
+)
+
+env.add_source_files(
+    env.modules_sources,
+    "ecs/src/commands/*.cpp"
+)
+
 # -----------------------------------------------------------------------------
 # Platform
 # -----------------------------------------------------------------------------
 
+# Future:
+# platform/src/*.cpp
+
 # -----------------------------------------------------------------------------
-# AI
+# Renderer
 # -----------------------------------------------------------------------------
+
+# Future:
+# renderer/src/*.cpp
 
 # -----------------------------------------------------------------------------
 # Physics
 # -----------------------------------------------------------------------------
 
+# Future:
+# physics/src/*.cpp
+
+# -----------------------------------------------------------------------------
+# Audio
+# -----------------------------------------------------------------------------
+
+# Future:
+# audio/src/*.cpp
+
 # -----------------------------------------------------------------------------
 # Networking
 # -----------------------------------------------------------------------------
 
+# Future:
+# networking/src/*.cpp
+
 # -----------------------------------------------------------------------------
-# Renderer
+# AI / Sentinel
 # -----------------------------------------------------------------------------
+
+# Future:
+# ai/src/*.cpp
+
+
+# Legacy includes
+# Remove after all systems are migrated.
+
+env.Append(CPPPATH=[
+    "#modules/aurora_core/include",
+])
+
+# -----------------------------------------------------------------------------
+# Legacy Compatibility Layer (Temporary)
+# Remove in Aurora v0.7
+# -----------------------------------------------------------------------------
+
+env.add_source_files(
+    env.modules_sources,
+    "src/*.cpp"
+)
+
+env.add_source_files(
+    env.modules_sources,
+    "src/events/*.cpp"
+)
+
+
+env.add_source_files(
+    env.modules_sources,
+    "src/thread/*.cpp"
+)
+
+env.add_source_files(
+    env.modules_sources,
+    "src/foundation/*.cpp"
+)

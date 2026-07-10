@@ -1,3 +1,9 @@
+/******************************************************************************
+ * LEGACY COMPONENT
+ *
+ * Temporary compatibility module.
+ * Scheduled for removal in Aurora v0.7.
+ ******************************************************************************/
 // -----------------------------------------------------------------------------
 // Aurora
 // -----------------------------------------------------------------------------
@@ -55,11 +61,11 @@
 // Memory
 // -----------------------------------------------------------------------------
 
-#include "memory/LinearAllocator.h"
-#include "memory/StackAllocator.h"
-#include "memory/PoolAllocator.h"
-#include "memory/ArenaAllocator.h"
-#include "memory/MemoryManager.h"
+#include "LinearAllocator.h"
+#include "StackAllocator.h"
+#include "PoolAllocator.h"
+#include "ArenaAllocator.h"
+#include "MemoryManager.h"
 
 // -----------------------------------------------------------------------------
 // STL

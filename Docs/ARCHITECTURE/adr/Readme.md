@@ -1,0 +1,19 @@
+# ADR-XXXX
+
+## Title
+
+## Status
+
+## Date
+
+## Context
+
+## Decision
+
+## Consequences
+
+## Alternatives Considered
+
+## Related Documents
+
+## Notes
