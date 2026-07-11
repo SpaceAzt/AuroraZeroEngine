@@ -33,6 +33,10 @@ public:
 
 	bool UnregisterModule(IModule *module);
 
+	[[nodiscard]]
+	bool IsRegistered(
+			const IModule *module) const;
+
 	// -------------------------------------------------------------------------
 	// Lifecycle
 	// -------------------------------------------------------------------------

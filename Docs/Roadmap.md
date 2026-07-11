@@ -72,3 +72,59 @@ Planned
 - [ ] Add Debug log level
 - [ ] Move EventBus diagnostic logs to Debug
 - [ ] Allow disabling debug logs in Release builds
+
+
+v0.6
+
+✔ Modular Core
+✔ Memory Module
+✔ EngineContext
+✔ ModuleManager
+
+----------------------------
+
+v0.7
+
+Logging
+
+Platform
+
+Time
+
+Events
+
+Bootstrap
+
+Remove Legacy
+
+----------------------------
+
+v0.8
+
+Resource
+
+Reflection
+
+Serialization
+
+Physics
+
+Renderer
+
+----------------------------
+
+v0.9
+
+ECS
+
+Scene
+
+Audio
+
+Networking
+
+----------------------------
+
+v1.0
+
+Stable Aurora Engine

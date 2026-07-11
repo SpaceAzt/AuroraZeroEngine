@@ -10,7 +10,10 @@
 
 #include "ModuleManager.h"
 
+#include "AuroraLogger.h"
+
 #include <algorithm>
+#include <string>
 
 // -----------------------------------------------------------------------------
 // Lifetime
@@ -32,16 +35,15 @@ bool ModuleManager::RegisterModule(
 		return false;
 	}
 
-	auto it = std::find(
-			m_modules.begin(),
-			m_modules.end(),
-			module);
-
-	if (it != m_modules.end()) {
+	if (IsRegistered(module)) {
 		return false;
 	}
 
 	m_modules.push_back(module);
+
+	AuroraLogger::Info(
+			"Registered module: " +
+			std::string(module->GetName()));
 
 	return true;
 }
@@ -59,9 +61,23 @@ bool ModuleManager::UnregisterModule(
 		return false;
 	}
 
+	AuroraLogger::Info(
+			"Unregistered module: " +
+			std::string(module->GetName()));
+
 	m_modules.erase(it);
 
 	return true;
+}
+
+// -----------------------------------------------------------------------------
+
+bool ModuleManager::IsRegistered(
+		const IModule *module) const {
+	return std::find(
+				   m_modules.begin(),
+				   m_modules.end(),
+				   module) != m_modules.end();
 }
 
 // -----------------------------------------------------------------------------
@@ -70,9 +86,21 @@ bool ModuleManager::UnregisterModule(
 
 void ModuleManager::InitializeModules() {
 	for (IModule *module : m_modules) {
-		if (module != nullptr) {
-			module->Initialize();
+		if (module == nullptr) {
+			continue;
 		}
+
+		if (!module->Initialize()) {
+			AuroraLogger::Error(
+					"Failed to initialize module: " +
+					std::string(module->GetName()));
+
+			continue;
+		}
+
+		AuroraLogger::Success(
+				"Initialized module: " +
+				std::string(module->GetName()));
 	}
 }
 
@@ -80,9 +108,15 @@ void ModuleManager::InitializeModules() {
 
 void ModuleManager::UpdateModules() {
 	for (IModule *module : m_modules) {
-		if (module != nullptr) {
-			module->Update();
+		if (module == nullptr) {
+			continue;
 		}
+
+		if (!module->IsInitialized()) {
+			continue;
+		}
+
+		module->Update();
 	}
 }
 
@@ -92,9 +126,21 @@ void ModuleManager::ShutdownModules() {
 	for (auto it = m_modules.rbegin();
 			it != m_modules.rend();
 			++it) {
-		if (*it != nullptr) {
-			(*it)->Shutdown();
+		IModule *module = *it;
+
+		if (module == nullptr) {
+			continue;
 		}
+
+		if (!module->IsInitialized()) {
+			continue;
+		}
+
+		module->Shutdown();
+
+		AuroraLogger::Info(
+				"Shutdown module: " +
+				std::string(module->GetName()));
 	}
 }
 

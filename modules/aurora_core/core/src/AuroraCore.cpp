@@ -15,9 +15,12 @@
 #include "AuroraTime.h"
 #include "GodotFileProvider.h"
 #include "GodotTimeProvider.h"
+#include "MemoryModule.h"
 
 static GodotTimeProvider g_timeProvider;
 static GodotFileProvider g_fileProvider;
+
+static MemoryModule g_memoryModule;
 
 // -----------------------------------------------------------------------------
 // Singleton
@@ -35,8 +38,6 @@ AuroraCore &AuroraCore::Get() {
 
 AuroraCore::AuroraCore() = default;
 
-// -----------------------------------------------------------------------------
-
 AuroraCore::~AuroraCore() = default;
 
 // -----------------------------------------------------------------------------
@@ -52,7 +53,7 @@ bool AuroraCore::Initialize() {
 			EngineState::Initializing);
 
 	// -------------------------------------------------------------------------
-	// Platform
+	// Legacy Platform Layer
 	// -------------------------------------------------------------------------
 
 	AuroraPlatform::Initialize();
@@ -66,19 +67,27 @@ bool AuroraCore::Initialize() {
 	AuroraTime::Initialize();
 
 	// -------------------------------------------------------------------------
-	// Engine Modules
+	// Register Engine Modules
 	// -------------------------------------------------------------------------
 
-	m_context
-			.GetModuleManager()
-			.InitializeModules();
+	ModuleManager &moduleManager =
+			m_context.GetModuleManager();
+
+	moduleManager.RegisterModule(
+			&g_memoryModule);
+
+	// -------------------------------------------------------------------------
+	// Initialize Modules
+	// -------------------------------------------------------------------------
+
+	moduleManager.InitializeModules();
+
+	m_context.SetEngineState(
+			EngineState::Running);
 
 	m_initialized = true;
 
 	m_running = true;
-
-	m_context.SetEngineState(
-			EngineState::Running);
 
 	AuroraLogger::Success(
 			"Aurora Engine initialized.");
@@ -116,12 +125,12 @@ void AuroraCore::Shutdown() {
 
 	AuroraPlatform::Shutdown();
 
+	m_context.SetEngineState(
+			EngineState::Stopped);
+
 	m_running = false;
 
 	m_initialized = false;
-
-	m_context.SetEngineState(
-			EngineState::Stopped);
 
 	AuroraLogger::Info(
 			"Aurora Engine shutdown.");

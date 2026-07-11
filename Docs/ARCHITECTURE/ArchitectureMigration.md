@@ -77,6 +77,23 @@ stable throughout development.
 - Engineering Standards
 
 ---
+Completed (v0.6)
+
+- Core separated
+- Memory separated
+- EngineContext added
+- ModuleManager added
+- IModule introduced
+- Modular lifecycle implemented
+- Legacy compatibility introduced
+
+Remaining (v0.7)
+
+- LoggingModule
+- PlatformModule
+- TimeModule
+- Remove Legacy Layer
+- EngineBootstrap
 
 ## Future Migration
 

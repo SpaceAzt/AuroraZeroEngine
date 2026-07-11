@@ -420,3 +420,36 @@ Application
 
 
 
+		Application Layer
+        │
+        ▼
+AuroraCore
+        │
+        ▼
+EngineContext
+        │
+        ▼
+ModuleManager
+        │
+        ▼
+IModule
+        │
+─────────────────────────────
+MemoryModule
+LoggingModule
+PlatformModule
+TimeModule
+EventModule
+PhysicsModule
+RendererModule
+AI Module
+
+Legacy Compatibility Layer
+
+AuroraPlatform
+
+AuroraLogger
+
+AuroraTime
+
+Godot Providers
