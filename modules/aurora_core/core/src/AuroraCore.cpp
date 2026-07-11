@@ -13,14 +13,16 @@
 #include "AuroraLogger.h"
 #include "AuroraPlatform.h"
 #include "AuroraTime.h"
+
 #include "GodotFileProvider.h"
 #include "GodotTimeProvider.h"
-#include "MemoryModule.h"
+
+#include "EngineBootstrap.h"
 
 static GodotTimeProvider g_timeProvider;
 static GodotFileProvider g_fileProvider;
 
-static MemoryModule g_memoryModule;
+static EngineBootstrap g_bootstrap;
 
 // -----------------------------------------------------------------------------
 // Singleton
@@ -70,17 +72,18 @@ bool AuroraCore::Initialize() {
 	// Register Engine Modules
 	// -------------------------------------------------------------------------
 
-	ModuleManager &moduleManager =
-			m_context.GetModuleManager();
+if (!g_bootstrap.RegisterModules(
+				m_context)) {
+		AuroraLogger::Error(
+				"Failed to register engine modules.");
 
-	moduleManager.RegisterModule(
-			&g_memoryModule);
+		return false;
+	}
 
-	// -------------------------------------------------------------------------
-	// Initialize Modules
-	// -------------------------------------------------------------------------
+	m_context
+			.GetModuleManager()
+			.InitializeModules();
 
-	moduleManager.InitializeModules();
 
 	m_context.SetEngineState(
 			EngineState::Running);
@@ -122,6 +125,9 @@ void AuroraCore::Shutdown() {
 	m_context
 			.GetModuleManager()
 			.ShutdownModules();
+
+	g_bootstrap.UnregisterModules(
+			m_context);
 
 	AuroraPlatform::Shutdown();
 

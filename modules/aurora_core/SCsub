@@ -29,6 +29,14 @@ env.add_source_files(
     "register_types.cpp"
 )
 
+
+# -----------------------------------------------------------------------------
+# Logging
+# -----------------------------------------------------------------------------
+
+SConscript("logging/SCsub")
+
+
 # -----------------------------------------------------------------------------
 # Memory
 # -----------------------------------------------------------------------------
@@ -150,4 +158,13 @@ env.add_source_files(
 env.add_source_files(
     env.modules_sources,
     "src/foundation/*.cpp"
+)
+
+env.Append(CPPPATH=[
+    "#modules/aurora_core/bootstrap/include",
+])
+
+env.add_source_files(
+    env.modules_sources,
+    "bootstrap/src/*.cpp"
 )
