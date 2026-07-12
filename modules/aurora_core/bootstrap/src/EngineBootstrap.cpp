@@ -16,6 +16,8 @@
 #include "MemoryModule.h"
 #include "TimeModule.h"
 
+#include "PlatformModule.h"
+
 #include "ModuleManager.h"
 
 namespace {
@@ -29,6 +31,12 @@ LoggingModule g_loggingModule;
 MemoryModule g_memoryModule;
 
 TimeModule g_timeModule;
+
+// -----------------------------------------------------------------------------
+// Core Services
+// -----------------------------------------------------------------------------
+
+PlatformModule g_platformModule;
 
 } // namespace
 
@@ -81,6 +89,18 @@ bool EngineBootstrap::RegisterModules(
 		return false;
 	}
 
+	// -------------------------------------------------------------------------
+	// Level 3
+	// Platform
+	// -------------------------------------------------------------------------
+
+	if (!moduleManager.RegisterModule(
+				&g_platformModule)) {
+		return false;
+	}
+
+	return true;
+
 	return true;
 }
 
@@ -98,6 +118,9 @@ void EngineBootstrap::UnregisterModules(
 	// -------------------------------------------------------------------------
 	// Reverse Registration Order
 	// -------------------------------------------------------------------------
+
+	moduleManager.UnregisterModule(
+			&g_platformModule);
 
 	moduleManager.UnregisterModule(
 			&g_timeModule);

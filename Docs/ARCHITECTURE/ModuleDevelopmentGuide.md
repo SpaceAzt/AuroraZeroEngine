@@ -192,3 +192,44 @@ Networking
 AI
 
 All modules must follow this guide.
+
+
+# Ownership Rule
+
+A module owns every object it creates.
+
+Managers never own platform implementations or providers.
+
+Managers only access interfaces.
+
+Ownership must be explicit.
+
+Prefer RAII and std::unique_ptr.
+
+Example:
+
+LoggingModule
+    owns
+        ConsoleLogger
+
+LogManager
+    observes
+        ILogger*
+
+PlatformModule
+    owns
+        GodotTimeProvider
+        GodotFileProvider
+
+PlatformManager
+    observes
+        ITimeProvider*
+        IFileProvider*
+
+TimeModule
+    owns
+        TimeManager
+
+MemoryModule
+    owns
+        MemoryManager

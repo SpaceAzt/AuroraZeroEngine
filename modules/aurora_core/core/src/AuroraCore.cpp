@@ -11,16 +11,8 @@
 #include "AuroraCore.h"
 
 #include "AuroraLogger.h"
-#include "AuroraPlatform.h"
-
-
-#include "GodotFileProvider.h"
-#include "GodotTimeProvider.h"
-
 #include "EngineBootstrap.h"
 
-static GodotTimeProvider g_timeProvider;
-static GodotFileProvider g_fileProvider;
 
 static EngineBootstrap g_bootstrap;
 
@@ -53,18 +45,6 @@ bool AuroraCore::Initialize() {
 
 	m_context.SetEngineState(
 			EngineState::Initializing);
-
-	// -------------------------------------------------------------------------
-	// Legacy Platform Layer
-	// -------------------------------------------------------------------------
-
-	AuroraPlatform::Initialize();
-
-	AuroraPlatform::SetTimeProvider(
-			&g_timeProvider);
-
-	AuroraPlatform::SetFileProvider(
-			&g_fileProvider);
 
 	// -------------------------------------------------------------------------
 	// Register Engine Modules
@@ -124,8 +104,6 @@ void AuroraCore::Shutdown() {
 
 	g_bootstrap.UnregisterModules(
 			m_context);
-
-	AuroraPlatform::Shutdown();
 
 	m_context.SetEngineState(
 			EngineState::Stopped);
