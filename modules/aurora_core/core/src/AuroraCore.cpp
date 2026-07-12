@@ -12,7 +12,7 @@
 
 #include "AuroraLogger.h"
 #include "AuroraPlatform.h"
-#include "AuroraTime.h"
+
 
 #include "GodotFileProvider.h"
 #include "GodotTimeProvider.h"
@@ -66,8 +66,6 @@ bool AuroraCore::Initialize() {
 	AuroraPlatform::SetFileProvider(
 			&g_fileProvider);
 
-	AuroraTime::Initialize();
-
 	// -------------------------------------------------------------------------
 	// Register Engine Modules
 	// -------------------------------------------------------------------------
@@ -104,8 +102,6 @@ void AuroraCore::Update() {
 	if (!m_running) {
 		return;
 	}
-
-	AuroraTime::Update();
 
 	m_context
 			.GetModuleManager()

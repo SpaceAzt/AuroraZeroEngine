@@ -11,8 +11,11 @@
 #include "EngineBootstrap.h"
 
 #include "EngineContext.h"
+
 #include "LoggingModule.h"
 #include "MemoryModule.h"
+#include "TimeModule.h"
+
 #include "ModuleManager.h"
 
 namespace {
@@ -24,6 +27,8 @@ namespace {
 LoggingModule g_loggingModule;
 
 MemoryModule g_memoryModule;
+
+TimeModule g_timeModule;
 
 } // namespace
 
@@ -46,7 +51,7 @@ bool EngineBootstrap::RegisterModules(
 	ModuleManager &moduleManager =
 			context.GetModuleManager();
 
-	// -------------------------------------------------------------------------
+// -------------------------------------------------------------------------
 	// Level 0
 	// Logging
 	// -------------------------------------------------------------------------
@@ -66,9 +71,23 @@ bool EngineBootstrap::RegisterModules(
 		return false;
 	}
 
+	// -------------------------------------------------------------------------
+	// Level 2
+	// Time
+	// -------------------------------------------------------------------------
+
+	if (!moduleManager.RegisterModule(
+				&g_timeModule)) {
+		return false;
+	}
+
 	return true;
 }
 
+// -----------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------
+// Bootstrap
 // -----------------------------------------------------------------------------
 
 void EngineBootstrap::UnregisterModules(
@@ -79,6 +98,9 @@ void EngineBootstrap::UnregisterModules(
 	// -------------------------------------------------------------------------
 	// Reverse Registration Order
 	// -------------------------------------------------------------------------
+
+	moduleManager.UnregisterModule(
+			&g_timeModule);
 
 	moduleManager.UnregisterModule(
 			&g_memoryModule);

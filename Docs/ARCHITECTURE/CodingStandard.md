@@ -296,3 +296,13 @@ Correct:
 Incorrect:
 
     logging/src/*.cpp
+
+
+
+	Public engine structures should be designed
+for future expansion.
+
+Adding new members should not require
+breaking existing engine APIs.
+
+Prefer extending data over replacing it.
