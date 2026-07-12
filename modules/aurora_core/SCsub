@@ -15,10 +15,7 @@ env.Append(CPPPATH=[
 # Core
 # -----------------------------------------------------------------------------
 
-env.add_source_files(
-    env.modules_sources,
-    "core/src/*.cpp"
-)
+SConscript("core/SCsub")
 
 # -----------------------------------------------------------------------------
 # Module Registration
@@ -36,21 +33,25 @@ env.add_source_files(
 
 SConscript("logging/SCsub")
 
-
 # -----------------------------------------------------------------------------
 # Memory
 # -----------------------------------------------------------------------------
 
-env.add_source_files(
-    env.modules_sources,
-    "memory/src/*.cpp"
-)
+SConscript("memory/SCsub")"
 
 # -----------------------------------------------------------------------------
 # Time
 # -----------------------------------------------------------------------------
 
 SConscript("time/SCsub")
+
+# -----------------------------------------------------------------------------
+# bootstrap
+# -----------------------------------------------------------------------------
+
+SConscript("bootstrap/SCsub")
+
+
 
 # -----------------------------------------------------------------------------
 # Events
@@ -166,9 +167,7 @@ env.add_source_files(
     "src/foundation/*.cpp"
 )
 
-env.Append(CPPPATH=[
-    "#modules/aurora_core/bootstrap/include",
-])
+
 
 env.add_source_files(
     env.modules_sources,
